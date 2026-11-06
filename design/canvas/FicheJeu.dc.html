@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>AnimPartner — Fiche jeu</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+body { margin: 0; font-family: 'Nunito Sans', system-ui, sans-serif; color: #23201E; }
+a { color: #C94722; } a:hover { color: #9E3417; }
+</style>
+</helmet>
+
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FFF9F2; display: flex; flex-direction: column; overflow: hidden">
+
+  <div style="flex: 0 0 auto; position: relative; height: 186px; background: #0E7C86; overflow: hidden">
+    <svg width="390" height="186" viewBox="0 0 390 186" fill="none" style="position: absolute; inset: 0" aria-hidden="true">
+      <circle cx="318" cy="38" r="66" fill="#17919B"></circle>
+      <circle cx="64" cy="168" r="88" fill="#0B6A73"></circle>
+      <path d="M0 140c52-26 96 18 148-6s90 10 142-14 70-8 100 4v62H0z" fill="#115F67"></path>
+      <path d="M-10 158c60-20 110 14 170-6s110 8 170-10v44H-10z" fill="#0A535A"></path>
+      <circle cx="196" cy="74" r="13" fill="#F2B705"></circle>
+      <path d="M196 87v30" stroke="#FFF9F2" stroke-width="5" stroke-linecap="round"></path>
+      <path d="M176 97l20-7 20 7" stroke="#FFF9F2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M189 117l-9 20M203 117l9 20" stroke="#FFF9F2" stroke-width="5" stroke-linecap="round"></path>
+    </svg>
+    <div style="position: absolute; top: 24px; left: 16px; right: 16px; display: flex; align-items: center; justify-content: space-between">
+      <a href="Bibliotheque.dc.html" aria-label="Retour à la bibliothèque" style="width: 44px; height: 44px; border-radius: 999px; background: rgba(255, 249, 242, 0.92); display: flex; align-items: center; justify-content: center; text-decoration: none">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#23201E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+      </a>
+      <div style="display: flex; gap: 10px">
+        <button type="button" aria-label="Mettre en favori" style="width: 44px; height: 44px; border-radius: 999px; border: none; background: rgba(255, 249, 242, 0.92); display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#F2B705" stroke="#8A6500" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.7l5.9-.8z"></path></svg>
+        </button>
+        <button type="button" aria-label="Partager la fiche" style="width: 44px; height: 44px; border-radius: 999px; border: none; background: rgba(255, 249, 242, 0.92); display: flex; align-items: center; justify-content: center; cursor: pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#23201E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M8 7.5L12 4l4 3.5"></path><path d="M5 13v6.5h14V13"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 18px 20px 8px; display: flex; flex-direction: column; gap: 16px">
+
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <h1 style="margin: 0; font-family: 'Fraunces', Georgia, serif; font-size: 25px; font-weight: 700; line-height: 1.2">La rivière aux crocodiles</h1>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px">
+        <span style="font-size: 12px; font-weight: 700; color: #C94722; background: #FDEDE7; border-radius: 999px; padding: 5px 10px">Défoulement</span>
+        <span style="font-size: 12px; font-weight: 700; color: #2F7A3E; background: #E6F2E7; border-radius: 999px; padding: 5px 10px">Extérieur</span>
+        <span style="font-size: 12px; font-weight: 700; color: #8A6500; background: #FEF3D4; border-radius: 999px; padding: 5px 10px">Sans matériel</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+      <div style="background: #FFFFFF; border: 1px solid #EDE2D6; border-radius: 14px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B625B" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg>
+        <span style="font-size: 13px; font-weight: 800">15 min</span>
+        <span style="font-size: 10px; color: #6B625B">durée</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #EDE2D6; border-radius: 14px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B625B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="3"></circle><path d="M3.5 18.5c0-2.8 2.5-4.5 5.5-4.5s5.5 1.7 5.5 4.5"></path><path d="M16 7a2.8 2.8 0 010 5.6M18 18.5c0-2-.8-3.4-2-4.2"></path></svg>
+        <span style="font-size: 13px; font-weight: 800">8 – 24</span>
+        <span style="font-size: 10px; color: #6B625B">enfants</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #EDE2D6; border-radius: 14px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B625B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s6.5-6 6.5-11a6.5 6.5 0 10-13 0C5.5 15 12 21 12 21z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>
+        <span style="font-size: 13px; font-weight: 800">Cour</span>
+        <span style="font-size: 10px; color: #6B625B">lieu</span>
+      </div>
+      <div style="background: #FFFFFF; border: 1px solid #EDE2D6; border-radius: 14px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B625B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18V8M4 8l8-3.5L20 8l-8 3.5z"></path><path d="M8 10v5c2.5 1.8 5.5 1.8 8 0v-5"></path></svg>
+        <span style="font-size: 13px; font-weight: 800">6 – 8</span>
+        <span style="font-size: 10px; color: #6B625B">ans</span>
+      </div>
+    </div>
+
+    <div role="tablist" aria-label="Sections de la fiche" style="display: flex; gap: 4px; background: #F3EADF; border-radius: 999px; padding: 4px">
+      <sc-for list="{{onglets}}" as="onglet" hint-placeholder-count="3">
+        <button type="button" role="tab" aria-selected="{{ onglet.on }}" onClick="{{ onglet.pick }}" style="{{ onglet.style }}">{{ onglet.label }}</button>
+      </sc-for>
+    </div>
+
+    <div style="min-height: 0; display: flex; flex-direction: column; gap: 12px">
+
+      <sc-if value="{{ estRegles }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; gap: 12px; align-items: flex-start">
+            <span style="width: 26px; height: 26px; flex: 0 0 auto; border-radius: 999px; background: #C94722; color: #FFFFFF; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">1</span>
+            <p style="margin: 0; font-size: 15px; line-height: 1.5">Tracez deux lignes au sol, à une vingtaine de pas l'une de l'autre : ce sont les berges. L'espace entre les deux est la rivière.</p>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start">
+            <span style="width: 26px; height: 26px; flex: 0 0 auto; border-radius: 999px; background: #C94722; color: #FFFFFF; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">2</span>
+            <p style="margin: 0; font-size: 15px; line-height: 1.5">Deux enfants deviennent les crocodiles et se placent au milieu. Les autres se rangent sur une berge.</p>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start">
+            <span style="width: 26px; height: 26px; flex: 0 0 auto; border-radius: 999px; background: #C94722; color: #FFFFFF; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">3</span>
+            <p style="margin: 0; font-size: 15px; line-height: 1.5">Au signal, tout le monde traverse. Les enfants touchés deviennent crocodiles à leur tour, sans quitter la rivière.</p>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start">
+            <span style="width: 26px; height: 26px; flex: 0 0 auto; border-radius: 999px; background: #C94722; color: #FFFFFF; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">4</span>
+            <p style="margin: 0; font-size: 15px; line-height: 1.5">La partie s'arrête quand il ne reste qu'un seul nageur : il choisit les crocodiles de la manche suivante.</p>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ estVariantes }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="background: #FFFFFF; border: 1px solid #EDE2D6; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 15px; font-weight: 800">Petits (3 – 5 ans)</span>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A433C">Réduisez la rivière de moitié et gardez un seul crocodile, un adulte au début pour montrer.</p>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #EDE2D6; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 15px; font-weight: 800">Version coopérative</span>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A433C">Un enfant touché peut être délivré si deux camarades lui prennent la main pour l'emmener sur la berge.</p>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #EDE2D6; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 4px">
+            <span style="font-size: 15px; font-weight: 800">Repli en intérieur</span>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #4A433C">En salle, remplacez la course par des déplacements en marchant vite : même règle, moins de chutes.</p>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ estSecurite }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; gap: 10px; align-items: flex-start; background: #FDEDE7; border: 1px solid #F3CDBE; border-radius: 14px; padding: 14px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9E3417" stroke-width="2" stroke-linecap="round" style="flex: 0 0 auto; margin-top: 1px" aria-hidden="true"><path d="M12 4l8.5 15H3.5z"></path><path d="M12 10v4M12 16.5h.01"></path></svg>
+            <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #5C2412">Délimitez les berges loin des murs et des grillages : les enfants freinent mal en fin de course.</p>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #EDE2D6; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px">
+            <span style="font-size: 15px; font-weight: 800">À vérifier avant de lancer</span>
+            <ul style="margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; color: #4A433C">
+              <li>Sol sec, sans gravillons ni flaque.</li>
+              <li>Lacets attachés, écharpes et capuches rangées.</li>
+              <li>Toucher dans le dos uniquement, jamais de tirage de vêtement.</li>
+              <li>Deux enfants du groupe ont de l'asthme : prévoyez une pause après deux manches.</li>
+            </ul>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+
+  </div>
+
+  <div style="flex: 0 0 auto; background: #FFFFFF; border-top: 1px solid #EDE2D6; padding: 12px 20px 22px; display: flex; gap: 10px; align-items: center">
+    <button type="button" aria-label="Lancer le minuteur de 15 minutes" style="width: 52px; height: 52px; flex: 0 0 auto; border-radius: 999px; border: 1.5px solid #EDE2D6; background: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#23201E" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 1.5M9.5 3h5"></path></svg>
+    </button>
+    <a href="Accueil.dc.html" style="flex: 1 1 auto; min-height: 52px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px; font-weight: 800; color: #FFFFFF; background: #C94722; border-radius: 999px">Ajouter au planning</a>
+  </div>
+
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { onglet: 'regles' };
+  }
+
+  renderVals() {
+    const base = 'font: inherit; font-size: 14px; font-weight: 700; flex: 1 1 0; min-height: 40px; border: none; border-radius: 999px; cursor: pointer;';
+    const items = [
+      { id: 'regles', label: 'Règles' },
+      { id: 'variantes', label: 'Variantes' },
+      { id: 'securite', label: 'Sécurité' }
+    ];
+    return {
+      onglets: items.map((it) => {
+        const on = this.state.onglet === it.id;
+        return {
+          label: it.label,
+          on: on,
+          style: base + (on
+            ? ' color: #23201E; background: #FFFFFF; box-shadow: 0 1px 4px rgba(35, 32, 30, 0.12);'
+            : ' color: #6B625B; background: transparent;'),
+          pick: () => this.setState({ onglet: it.id })
+        };
+      }),
+      estRegles: this.state.onglet === 'regles',
+      estVariantes: this.state.onglet === 'variantes',
+      estSecurite: this.state.onglet === 'securite'
+    };
+  }
+}
+</script>
+</body>
+</html>

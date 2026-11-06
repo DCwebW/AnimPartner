@@ -1,0 +1,31 @@
+# Dépendances
+node_modules/
+.pnp/
+.pnp.js
+
+# Build
+dist/
+build/
+.next/
+out/
+
+# Secrets et configuration locale
+.env
+.env.*
+!.env.example
+*.pem
+*-service-account.json
+
+# Système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+
+# Journaux
+*.log
+npm-debug.log*

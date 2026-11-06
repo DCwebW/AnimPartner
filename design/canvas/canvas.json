@@ -1,0 +1,123 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Accueil.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Accueil",
+      "w": 390,
+      "x": 0,
+      "y": 2180
+    },
+    "AccueilBandeau.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Accueil — variante bandeau",
+      "w": 390,
+      "x": 1880,
+      "y": 2180
+    },
+    "AccueilCrayon.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Accueil — crayonné",
+      "w": 390,
+      "x": 2332,
+      "y": 2180
+    },
+    "AccueilNuit.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Accueil — nuit, mode sombre",
+      "w": 390,
+      "x": 2764,
+      "y": 2180
+    },
+    "Assets.dc.html": {
+      "h": 1760,
+      "title": "Assets",
+      "w": 1200,
+      "x": 1400,
+      "y": 0
+    },
+    "Bibliotheque.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Bibliothèque de jeux",
+      "w": 390,
+      "x": 470,
+      "y": 2180
+    },
+    "FicheJeu.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Fiche jeu",
+      "w": 390,
+      "x": 1410,
+      "y": 2180
+    },
+    "Filtres.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "Filtres",
+      "w": 390,
+      "x": 940,
+      "y": 2180
+    },
+    "Main.dc.html": {
+      "h": 1340,
+      "title": "Fondations",
+      "w": 900,
+      "x": 0,
+      "y": 0
+    },
+    "VentBeauTemps.dc.html": {
+      "h": 320,
+      "is_interactive": true,
+      "title": "Vent — beau temps",
+      "w": 430,
+      "x": 2700,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-24T17:05:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "n1": {
+      "fill": "orange",
+      "text": "Direction : ludique et chaleureux, mais lisible en plein soleil et utilisable d'une main. Crème + corail + lagune, coins arrondis, cibles tactiles de 48 px minimum.",
+      "w": 320,
+      "x": 980,
+      "y": 0
+    },
+    "n2": {
+      "kind": "title1",
+      "maxW": 3210,
+      "text": "Écrans clés — mobile 390 × 844",
+      "w": 240,
+      "x": 0,
+      "y": 1900
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Assets.dc.html",
+    "Accueil.dc.html",
+    "Bibliotheque.dc.html",
+    "Filtres.dc.html",
+    "FicheJeu.dc.html",
+    "AccueilBandeau.dc.html",
+    "AccueilCrayon.dc.html",
+    "AccueilNuit.dc.html",
+    "VentBeauTemps.dc.html"
+  ],
+  "pages": [],
+  "title": "AnimPartner — Design"
+}

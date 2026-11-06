@@ -1,0 +1,3 @@
+# Fins de ligne normalisées en LF dans le dépôt, pour que les diffs des planches
+# restent lisibles quelle que soit la machine.
+* text=auto eol=lf
