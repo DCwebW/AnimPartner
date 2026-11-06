@@ -5,6 +5,8 @@ bibliothèque de jeux et planning. **Nom de travail.**
 
 Phase en cours : **design**. Pas encore de code applicatif.
 
+Dépôt : <https://github.com/DCwebW/AnimPartner> (privé)
+
 ## Contenu du dépôt
 
 - [`docs/brief-produit.md`](docs/brief-produit.md) — intention, contexte d'usage, piliers
