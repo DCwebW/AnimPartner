@@ -11,6 +11,8 @@ Dépôt : <https://github.com/DCwebW/AnimPartner> (privé)
 
 - [`docs/brief-produit.md`](docs/brief-produit.md) — intention, contexte d'usage, piliers
   fonctionnels, périmètre et questions ouvertes.
+- [`docs/decisions-mvp.md`](docs/decisions-mvp.md) — cadrage du MVP (énigmes et
+  devinettes), ordre de développement, méthode et points de vigilance.
 - [`design/design-system.md`](design/design-system.md) — couleurs, typographie, rythme,
   règles d'interface, crayonné et mode sombre.
 - [`design/assets.md`](design/assets.md) — pictogrammes, familles de jeux, indicateurs,

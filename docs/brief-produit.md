@@ -61,6 +61,9 @@ changements de palette sur la même géométrie, pas de nouveaux dessins.
   cela pèse sur l'architecture.
 - **Contenu** des jeux : base fournie, contributions des utilisateurs, ou les deux ?
 - **Équipe** : un animateur seul, ou un planning partagé entre collègues d'un même centre ?
+  *Premier pas tranché le 7 novembre 2026 : usage personnel d'abord, ouverture progressive
+  à d'autres animateurs ensuite. Le partage au sein d'un centre reste ouvert. Voir
+  [décisions de cadrage du MVP](decisions-mvp.md).*
 - Modèle économique et cadre RGPD (données d'enfants : allergies, besoins particuliers).
 
 ## Contenu des maquettes
