@@ -24,7 +24,8 @@ Dépôt : <https://github.com/DCwebW/AnimPartner> (privé)
 Elles se travaillent sur un canevas en ligne, privé :
 <https://claude.ai/artifact/6LBaunrVpa19L14r38n6Sv>
 
-Dix planches : Fondations, Assets, Vent — beau temps, et sept écrans mobiles 390 × 844
+Douze planches : Fondations, Assets, trois bandeaux animés (Vent — beau temps, Nuit — ciel
+animé, Hiver — neige), et sept écrans mobiles 390 × 844
 (trois variantes d'accueil, un accueil de nuit, Bibliothèque, Filtres, Fiche jeu).
 
 ### Rapatrier les sources après une séance
