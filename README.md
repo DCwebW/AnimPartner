@@ -13,6 +13,11 @@ Dépôt : <https://github.com/DCwebW/AnimPartner> (privé)
   fonctionnels, périmètre et questions ouvertes.
 - [`docs/decisions-mvp.md`](docs/decisions-mvp.md) — cadrage du MVP (énigmes et
   devinettes), ordre de développement, méthode et points de vigilance.
+- [`docs/stack-technique.md`](docs/stack-technique.md) — stack retenue : Expo, API Hono sur
+  Cloudflare Workers, Neon, niveaux de vérification et agents de développement.
+- [`CLAUDE.md`](CLAUDE.md) — consignes lues par les agents : état du projet, stack, méthode,
+  maquettes de référence, règles.
+- [`docs/backlog/`](docs/backlog) — brouillons d'issues avant création sur GitHub.
 - [`design/design-system.md`](design/design-system.md) — couleurs, typographie, rythme,
   règles d'interface, crayonné et mode sombre.
 - [`design/assets.md`](design/assets.md) — pictogrammes, familles de jeux, indicateurs,
