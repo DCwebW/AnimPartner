@@ -95,6 +95,14 @@
       "w": 430,
       "x": 2722,
       "y": 880
+    },
+    "AutomneLac.dc.html": {
+      "h": 320,
+      "is_interactive": true,
+      "title": "Automne — lac et pont",
+      "w": 430,
+      "x": 2722,
+      "y": 1320
     }
   },
   "createdOnFiles": {
@@ -134,7 +142,8 @@
     "AccueilNuit.dc.html",
     "VentBeauTemps.dc.html",
     "NuitAnimee.dc.html",
-    "HiverNeige.dc.html"
+    "HiverNeige.dc.html",
+    "AutomneLac.dc.html"
   ],
   "pages": [],
   "title": "AnimPartner — Design"

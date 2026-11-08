@@ -110,6 +110,34 @@ immobile sous un vent visible sonne faux.
 
 Tout est coupé sous `prefers-reduced-motion: reduce`.
 
+### L'automne — proposé le 8 novembre 2026
+
+Planche « Automne — lac et pont », même cadre et même crayonné que le vent, la nuit et
+l'hiver. Pas encore validé.
+
+**Scène.** Ciel pâle réchauffé d'une lueur ocre `#EFA95A` qui se densifie vers
+l'horizon, soleil bas, collines lointaines `#E7C49A`. Au fond, un lac `#A9CFD8` hachuré
+à l'horizontale qui forme une anse au premier plan. Une passerelle en bois `#9A5A32`
+enjambe l'anse et s'y reflète. Sol d'herbe sèche `#E9DDB0`, hachuré ocre et olive.
+
+**Feuillages.** Une seule silhouette de houppier, réutilisée à toutes les échelles. Le
+dégradé du rouge au jaune passe par trois aplats : une teinte de base, une tache claire
+en haut à gauche et une tache sombre en bas à droite. Grand arbre de gauche orange
+`#E0712A` éclairé de `#F2B437` et ombré de `#B8361F`. Grand arbre de droite rouge
+`#C8432B` éclairé de `#E8862C`. Petit arbre jaune `#F0B232` sur la rive. Les arbres de
+l'autre rive alternent les trois familles et posent des traits de reflet sur le lac.
+
+**Animation.** Onze feuilles, érables et feuilles ovales, tombent de sous les
+houppiers. Chacune empile trois groupes : la chute, avec apparition et disparition
+progressives (8 à 12 s) ; un balancement latéral de ±7 px (1,7 à 2,6 s) ; une rotation
+qui retourne la feuille par `scaleX` (1,5 à 2,4 s). Les durées ne sont pas multiples
+entre elles, donc les feuilles ne tombent jamais ensemble. Une feuille part en
+diagonale vers le lac (14 s). Deux autres dérivent sur l'anse. Les nuages bougent comme
+dans la scène du vent.
+
+Tout est coupé sous `prefers-reduced-motion: reduce` : les feuilles restent figées en
+l'air, ce qui se lit encore comme une chute.
+
 ## À faire
 
 - Décider si le vent anime le paysage des écrans d'accueil ou reste une étude. S'il
