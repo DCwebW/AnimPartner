@@ -103,6 +103,70 @@
       "w": 430,
       "x": 2722,
       "y": 1320
+    },
+    "MvpVentEnigme.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "MVP · Beau temps — énigme",
+      "w": 390,
+      "x": 0,
+      "y": 3444
+    },
+    "MvpVentReponse.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "MVP · Beau temps — réponse",
+      "w": 390,
+      "x": 470,
+      "y": 3444
+    },
+    "MvpNuitEnigme.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "MVP · Nuit — énigme",
+      "w": 390,
+      "x": 1060,
+      "y": 3444
+    },
+    "MvpNuitReponse.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "MVP · Nuit — réponse",
+      "w": 390,
+      "x": 1530,
+      "y": 3444
+    },
+    "MvpHiverEnigme.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "MVP · Hiver — énigme",
+      "w": 390,
+      "x": 2120,
+      "y": 3444
+    },
+    "MvpHiverReponse.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "MVP · Hiver — réponse",
+      "w": 390,
+      "x": 2590,
+      "y": 3444
+    },
+    "MvpAutomneEnigme.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "MVP · Automne — énigme",
+      "w": 390,
+      "x": 3180,
+      "y": 3444
+    },
+    "MvpAutomneReponse.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "MVP · Automne — réponse",
+      "w": 390,
+      "x": 3650,
+      "y": 3444
     }
   },
   "createdOnFiles": {
@@ -128,6 +192,14 @@
       "w": 240,
       "x": 0,
       "y": 1900
+    },
+    "n3": {
+      "kind": "title1",
+      "maxW": 4040,
+      "text": "MVP — énigmes, une paire par bandeau animé",
+      "w": 240,
+      "x": 0,
+      "y": 3164
     }
   },
   "order": [
@@ -143,7 +215,15 @@
     "VentBeauTemps.dc.html",
     "NuitAnimee.dc.html",
     "HiverNeige.dc.html",
-    "AutomneLac.dc.html"
+    "AutomneLac.dc.html",
+    "MvpVentEnigme.dc.html",
+    "MvpVentReponse.dc.html",
+    "MvpNuitEnigme.dc.html",
+    "MvpNuitReponse.dc.html",
+    "MvpHiverEnigme.dc.html",
+    "MvpHiverReponse.dc.html",
+    "MvpAutomneEnigme.dc.html",
+    "MvpAutomneReponse.dc.html"
   ],
   "pages": [],
   "title": "AnimPartner — Design"

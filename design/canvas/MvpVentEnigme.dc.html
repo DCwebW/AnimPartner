@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>AnimPartner — MVP Beau temps, énigme</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+body { margin: 0; font-family: 'Nunito Sans', system-ui, sans-serif; color: #23201E; }
+a { color: #0E5A7D; } a:hover { color: #0E5A7D; }
+
+@keyframes mvee-rafale {
+  from { stroke-dashoffset: 700; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes mvee-herbe {
+  0%, 100% { transform: skewX(0deg); }
+  18% { transform: skewX(-7deg); }
+  32% { transform: skewX(-3deg); }
+  48% { transform: skewX(-9deg); }
+  66% { transform: skewX(-2.5deg); }
+  82% { transform: skewX(1.5deg); }
+}
+@keyframes mvee-derive {
+  from { transform: translateX(0); }
+  to { transform: translateX(22px); }
+}
+
+.mvee-rafale {
+  stroke-dasharray: 90 610;
+  stroke-dashoffset: 700;
+  animation-name: mvee-rafale;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.mvee-r1 { animation-duration: 6s; }
+.mvee-r2 { animation-duration: 7.5s; animation-delay: 1.8s; }
+.mvee-r3 { animation-duration: 8.5s; animation-delay: 3.4s; }
+
+.mvee-herbe {
+  transform-box: view-box;
+  transform-origin: 195px 105px;
+  animation: mvee-herbe 6s ease-in-out infinite;
+}
+.mvee-nuage1 { animation: mvee-derive 17s ease-in-out infinite alternate; }
+.mvee-nuage2 { animation: mvee-derive 23s ease-in-out infinite alternate; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mvee-rafale, .mvee-herbe, .mvee-nuage1, .mvee-nuage2 { animation: none; }
+}
+</style>
+</helmet>
+
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #CFE9F4; display: flex; flex-direction: column; overflow: hidden">
+
+  <div style="flex: 0 0 auto; height: 187px; overflow: hidden">
+    <svg width="390" height="200" viewBox="0 0 390 200" fill="none" aria-hidden="true">
+      <defs>
+        <pattern id="mvee-ciel-h" width="10" height="3.6" patternUnits="userSpaceOnUse">
+          <path d="M-1 1.8h12" stroke="#1F86B5" stroke-width="1.7" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-ciel-v" width="3.6" height="10" patternUnits="userSpaceOnUse">
+          <path d="M1.8-1v12" stroke="#0E6E99" stroke-width="1.5" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-ciel-d1" width="10" height="3.8" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">
+          <path d="M-1 1.9h12" stroke="#36A6CC" stroke-width="1.6" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-ciel-d2" width="10" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(-42)">
+          <path d="M-1 2h12" stroke="#2E97C4" stroke-width="1.5" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-herbe-h" width="10" height="3.6" patternUnits="userSpaceOnUse">
+          <path d="M-1 1.8h12" stroke="#74B32E" stroke-width="1.7" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-herbe-v" width="3.6" height="10" patternUnits="userSpaceOnUse">
+          <path d="M1.8-1v12" stroke="#27702F" stroke-width="1.5" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-herbe-d1" width="10" height="3.8" patternUnits="userSpaceOnUse" patternTransform="rotate(-40)">
+          <path d="M-1 1.9h12" stroke="#4C9A35" stroke-width="1.6" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-herbe-d2" width="10" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(36)">
+          <path d="M-1 2h12" stroke="#8CC63F" stroke-width="1.5" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-soleil-h" width="7" height="3.2" patternUnits="userSpaceOnUse">
+          <path d="M-1 1.6h9" stroke="#EFA81A" stroke-width="1.4" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-soleil-d" width="7" height="3.2" patternUnits="userSpaceOnUse" patternTransform="rotate(34)">
+          <path d="M-1 1.6h9" stroke="#E08A0B" stroke-width="1.5" stroke-linecap="round"></path>
+        </pattern>
+        <clipPath id="mvee-zone-herbe">
+          <path d="M0 105c34-4 64 2 100-1 36-3 66 3 104 1 38-2 74 3 112 0 30-2 56 2 74 1v94H0z"></path>
+        </clipPath>
+        <clipPath id="mvee-zone-soleil"><circle cx="324" cy="40" r="22"></circle></clipPath>
+        <clipPath id="mvee-zone-nuage">
+          <path d="M40 78c-10 0-12-10-2-12 0-10 12-15 20-8 8-10 25-8 27 4 10-2 15 8 8 14-5 4-43 4-53 2z"></path>
+        </clipPath>
+      </defs>
+
+      <rect width="390" height="200" fill="#CFE9F4"></rect>
+      <rect width="390" height="200" fill="url(#mvee-ciel-h)" opacity="0.5"></rect>
+      <rect width="390" height="200" fill="url(#mvee-ciel-d1)" opacity="0.4"></rect>
+      <rect width="390" height="100" fill="url(#mvee-ciel-v)" opacity="0.45"></rect>
+      <rect width="390" height="60" fill="url(#mvee-ciel-d2)" opacity="0.42"></rect>
+      <rect width="390" height="30" fill="url(#mvee-ciel-h)" opacity="0.45"></rect>
+
+      <circle cx="324" cy="40" r="22" fill="#FBD23E"></circle>
+      <g clip-path="url(#mvee-zone-soleil)">
+        <rect x="300" y="16" width="48" height="48" fill="url(#mvee-soleil-h)" opacity="0.55"></rect>
+        <rect x="300" y="16" width="48" height="48" fill="url(#mvee-soleil-d)" opacity="0.45"></rect>
+      </g>
+      <path d="M324 18c12 0 22 10 22 22s-10 22-22 22-22-10-22-22 10-22 22-22z" stroke="#4A3F36" stroke-width="1.8" stroke-linecap="round"></path>
+      <path d="M325 17c12.5 1 21.5 11 21 23s-11 21-23 20.5-21-11-20.5-23S313 16 325 17z" stroke="#4A3F36" stroke-width="1.1" stroke-linecap="round" stroke-opacity="0.45"></path>
+      <path d="M352 40h10M344 60l7 7M324 68v10M304 60l-7 7M296 40h-10M304 20l-7-7M324 12V2M344 20l7-7" stroke="#D98C0E" stroke-width="2.3" stroke-linecap="round"></path>
+      <path d="M353 38h10M346 62l7 7M322 68v10M302 62l-7 7M295 38h-10M302 18l-7-7M322 12V2M346 18l7-7" stroke="#D98C0E" stroke-width="1.2" stroke-linecap="round" stroke-opacity="0.5"></path>
+
+      <g class="mvee-nuage1">
+        <path d="M40 78c-10 0-12-10-2-12 0-10 12-15 20-8 8-10 25-8 27 4 10-2 15 8 8 14-5 4-43 4-53 2z" fill="#FCFEFE" fill-opacity="0.95"></path>
+        <g clip-path="url(#mvee-zone-nuage)">
+          <rect x="26" y="70" width="80" height="11" fill="url(#mvee-ciel-h)" opacity="0.3"></rect>
+        </g>
+        <path d="M40 78c-10 0-12-10-2-12 0-10 12-15 20-8 8-10 25-8 27 4 10-2 15 8 8 14-5 4-43 4-53 2z" stroke="#4A3F36" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M41.5 79.5c-11-.5-13-11-3-13.5.5-10 13-14.5 21-7.5 8-10 25-7 27 5" stroke="#4A3F36" stroke-width="1" stroke-linecap="round" stroke-opacity="0.45"></path>
+      </g>
+
+      <g class="mvee-nuage2">
+        <path d="M173 46c-8 0-9-8-2-9 0-8 10-12 16-6 6-8 20-5 22 4 8 0 10 8 4 11-5 2-34 2-40 0z" fill="#FCFEFE" fill-opacity="0.95"></path>
+        <path d="M173 46c-8 0-9-8-2-9 0-8 10-12 16-6 6-8 20-5 22 4 8 0 10 8 4 11-5 2-34 2-40 0z" stroke="#4A3F36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      </g>
+
+      <path class="mvee-rafale mvee-r1" d="M-50 58C20 44 80 42 124 50c22 4 30 18 18 24-12 6-20-4-10-14 12-12 58-16 118-10 60 6 110-4 190-12" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-opacity="0.8"></path>
+      <path class="mvee-rafale mvee-r2" d="M-50 86C30 76 110 74 170 80c24 2 48-4 62-10 10-4 18 4 10 10-8 6-16-2-6-12 12-12 60-6 184-12" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.66"></path>
+      <path class="mvee-rafale mvee-r3" d="M-50 98C40 90 120 94 200 90c34-2 56 6 70 10 9 3 16-5 8-10-8-5-15 3-5 11 10 8 60 2 217-6" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" stroke-opacity="0.55"></path>
+
+      <path d="M0 105c34-4 64 2 100-1 36-3 66 3 104 1 38-2 74 3 112 0 30-2 56 2 74 1v94H0z" fill="#DCEFBC"></path>
+      <g clip-path="url(#mvee-zone-herbe)">
+        <rect y="98" width="390" height="102" fill="url(#mvee-herbe-h)" opacity="0.52"></rect>
+        <rect y="98" width="390" height="102" fill="url(#mvee-herbe-d1)" opacity="0.44"></rect>
+        <rect y="124" width="390" height="76" fill="url(#mvee-herbe-v)" opacity="0.46"></rect>
+        <rect y="150" width="390" height="50" fill="url(#mvee-herbe-d2)" opacity="0.4"></rect>
+        <rect y="176" width="390" height="24" fill="url(#mvee-herbe-h)" opacity="0.4"></rect>
+      </g>
+
+      <path d="M0 105c34-4 64 2 100-1 36-3 66 3 104 1 38-2 74 3 112 0 30-2 56 2 74 1" stroke="#4A3F36" stroke-width="2" stroke-linecap="round"></path>
+      <path d="M0 107c36-4 60 2 102-1 36-3 62 3 104 1 38-2 70 3 110 0 30-2 54 2 74 1" stroke="#4A3F36" stroke-width="1.1" stroke-linecap="round" stroke-opacity="0.4"></path>
+
+      <g class="mvee-herbe">
+        <path d="M10 105l-2-8M18 105l2-9M27 104l4-7M52 104l-2-9M62 104l2-9M88 103l-2-7M98 103l2-9M124 104l-2-8M134 104l3-7M160 105l-2-9M170 105l3-7M196 105l-2-8M206 105l2-9M232 104l-2-8M242 104l3-7M268 105l-2-9M278 105l3-7M304 104l-2-8M314 104l2-9M340 104l-2-8M350 104l3-7M376 103l-2-9" stroke="#27702F" stroke-width="1.7" stroke-linecap="round"></path>
+      </g>
+    </svg>
+  </div>
+
+  <section aria-label="Énigme du moment" style="position: relative; flex: 1 1 auto; min-height: 0; margin-top: -60px; background: #FEF3D4; border-radius: 30px 26px 0 0; box-shadow: 0 -10px 30px rgba(35, 32, 30, 0.18); overflow: hidden">
+
+    <svg width="390" height="717" viewBox="0 0 390 717" fill="none" aria-hidden="true" style="position: absolute; left: 0; top: 0; z-index: 0">
+      <defs>
+        <pattern id="mvee-papier-h" width="11" height="4.4" patternUnits="userSpaceOnUse">
+          <path d="M-1 2.2h13" stroke="#C9A227" stroke-width="1.4" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mvee-papier-d" width="11" height="4.6" patternUnits="userSpaceOnUse" patternTransform="rotate(36)">
+          <path d="M-1 2.3h13" stroke="#D4A93A" stroke-width="1.3" stroke-linecap="round"></path>
+        </pattern>
+      </defs>
+      <rect width="390" height="717" fill="url(#mvee-papier-h)" opacity="0.13"></rect>
+      <rect width="390" height="717" fill="url(#mvee-papier-d)" opacity="0.1"></rect>
+    </svg>
+
+    <div style="position: relative; z-index: 1; height: 100%; box-sizing: border-box; padding: 30px 20px 26px; display: flex; flex-direction: column; gap: 12px">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font-family: 'Fraunces', Georgia, serif; font-size: 25px; font-weight: 700; color: #23201E">Bonjour, Camille</span>
+          <span style="display: flex; align-items: center; gap: 7px; font-size: 13px; color: #6B625B">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E6E99" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5h10a3 3 0 1 0-3-3"></path><path d="M3 12.5h14.5a3 3 0 1 1-3 3"></path><path d="M3 16.5h6.5"></path></svg>
+            Mercredi 15 avril · Soleil et vent, 17 °C
+          </span>
+        </div>
+        <a href="#parametres" aria-label="Paramètres" style="width: 46px; height: 46px; flex: 0 0 auto; border-radius: 999px; background: #FFFFFF; border: 1.4px solid rgba(74, 63, 54, 0.4); box-shadow: 1px 1.5px 0 rgba(74, 63, 54, 0.18); display: flex; align-items: center; justify-content: center; color: #23201E">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.88 9.87 L21.46 10.38 L21.46 13.62 L18.88 14.13 L18.37 15.36 L19.84 17.54 L17.54 19.84 L15.36 18.37 L14.13 18.88 L13.62 21.46 L10.38 21.46 L9.87 18.88 L8.64 18.37 L6.46 19.84 L4.16 17.54 L5.63 15.36 L5.12 14.13 L2.54 13.62 L2.54 10.38 L5.12 9.87 L5.63 8.64 L4.16 6.46 L6.46 4.16 L8.64 5.63 L9.87 5.12 L10.38 2.54 L13.62 2.54 L14.13 5.12 L15.36 5.63 L17.54 4.16 L19.84 6.46 L18.37 8.64Z" stroke-width="1.9"></path><circle cx="12" cy="12" r="3" stroke-width="1.9"></circle></svg>
+        </a>
+      </div>
+
+      <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: center">
+      <div role="group" aria-label="Énigme" style="position: relative; width: 290px; height: 372px; flex: 0 0 auto; align-self: center; transform: rotate(-2deg) scale(1.1)">
+        <svg width="290" height="372" viewBox="0 -42 290 372" fill="none" aria-hidden="true" style="position: absolute; left: 0; top: 0">
+          <defs>
+            <pattern id="mvee-etq-h" width="10" height="4" patternUnits="userSpaceOnUse">
+              <path d="M-1 2h12" stroke="#8DC3DD" stroke-width="1.4" stroke-linecap="round"></path>
+            </pattern>
+            <pattern id="mvee-etq-d" width="10" height="4.2" patternUnits="userSpaceOnUse" patternTransform="rotate(-38)">
+              <path d="M-1 2.1h12" stroke="#8DC3DD" stroke-width="1.3" stroke-linecap="round"></path>
+            </pattern>
+            <clipPath id="mvee-etq-zone"><path d="M62 1.5H229L288 47V319Q288 327.5 279.5 327.5H10.5Q2 327.5 2 319V47Z"></path></clipPath>
+          </defs>
+          <path d="M62 1.5H229L288 47V319Q288 327.5 279.5 327.5H10.5Q2 327.5 2 319V47Z" fill="#FFFFFF"></path>
+          <g clip-path="url(#mvee-etq-zone)">
+            <rect width="290" height="330" fill="url(#mvee-etq-h)" opacity="0.14"></rect>
+            <rect width="290" height="120" fill="url(#mvee-etq-d)" opacity="0.112"></rect>
+          </g>
+          <path d="M67 14H224L275 53V310Q275 315 270 315H20Q15 315 15 310V53Z" stroke="#0E6E99" stroke-width="1.3" stroke-dasharray="5 5" stroke-linecap="round" stroke-opacity="0.38"></path>
+          <path d="M62 1.5H229L288 47V319Q288 327.5 279.5 327.5H10.5Q2 327.5 2 319V47Z" stroke="#4A3F36" stroke-width="1.6" stroke-linejoin="round" stroke-opacity="0.55"></path>
+          <path d="M62 1.5H229L288 47V319Q288 327.5 279.5 327.5H10.5Q2 327.5 2 319V47Z" transform="translate(1.2 1.5)" stroke="#4A3F36" stroke-width="1" stroke-linejoin="round" stroke-opacity="0.248"></path>
+          <circle cx="145" cy="34" r="13" stroke="#B89B5E" stroke-width="3.4"></circle>
+          <circle cx="145" cy="34" r="9" fill="#FEF3D4"></circle>
+          <circle cx="145" cy="34" r="9" stroke="#4A3F36" stroke-width="1.1" stroke-opacity="0.55"></circle>
+          <path d="M140 33C133 12 138-10 145-26M150 33C157 12 152-10 145-26" stroke="#9C7A4E" stroke-width="2.3" stroke-linecap="round"></path>
+          <path d="M145-27C139-33 130-36 120-38M145-27C151-34 160-38 172-39" stroke="#9C7A4E" stroke-width="2" stroke-linecap="round"></path>
+          <circle cx="145" cy="-27" r="3.4" fill="#9C7A4E"></circle>
+        </svg>
+        <div style="position: absolute; left: 32px; right: 32px; top: 104px; bottom: 34px; display: flex; flex-direction: column; justify-content: center; gap: 14px">
+        <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+          <span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #0E6E99">Énigme</span>
+          <span style="font-size: 12px; font-weight: 700; color: #0E5A7D; background: #E3F1F8; border-radius: 999px; padding: 3px 10px">7 – 10 ans</span>
+        </span>
+        <span style="font-family: 'Fraunces', Georgia, serif; font-size: 23px; line-height: 31px; font-weight: 600; color: #23201E">J'ai un lit mais je ne dors jamais, je cours mais je n'ai pas de jambes. <span style="white-space: nowrap">Qui suis-je&nbsp;?</span></span>
+        </div>
+      </div>
+      </div>
+
+      <div style="flex: 0 0 auto; display: flex; flex-direction: column; gap: 4px">
+        <a href="MvpVentReponse.dc.html" style="min-height: 52px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font: inherit; font-size: 16px; font-weight: 800; color: #FFFFFF; background: #0E6E99; border: 1.4px solid rgba(74, 63, 54, 0.4); border-radius: 999px; box-shadow: 1px 1.5px 0 rgba(74, 63, 54, 0.18); cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5a7.5 7.5 0 0 1 13-4.6l2 2"></path><path d="M19.5 4.5v4.4h-4.4"></path><path d="M19.5 12.5a7.5 7.5 0 0 1-13 4.6l-2-2"></path><path d="M4.5 19.5v-4.4h4.4"></path></svg>Voir la réponse</a>
+        <button type="button" style="min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font: inherit; font-size: 15px; font-weight: 700; color: #0E5A7D; background: transparent; border: 0; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4.5"></rect><circle cx="9" cy="9" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="15" cy="9" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="9" cy="15" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="15" cy="15" r="1.3" fill="currentColor" stroke="none"></circle></svg>Une autre énigme</button>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

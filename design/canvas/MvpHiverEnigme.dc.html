@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>AnimPartner — MVP Hiver, énigme</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+body { margin: 0; font-family: 'Nunito Sans', system-ui, sans-serif; color: #23201E; }
+a { color: #2F5D46; } a:hover { color: #2F5D46; }
+
+/* Neige : trois couches dupliquées sur 200 px, la chute boucle sans saut */
+@keyframes mhie-chute {
+  from { transform: translateY(0); }
+  to { transform: translateY(200px); }
+}
+@keyframes mhie-derive {
+  from { transform: translateX(-5px); }
+  to { transform: translateX(5px); }
+}
+.mhie-chute-loin { animation: mhie-chute 14s linear infinite; }
+.mhie-chute-mi { animation: mhie-chute 9s linear -3s infinite; }
+.mhie-chute-pres { animation: mhie-chute 6s linear -2s infinite; }
+.mhie-derive-loin { animation: mhie-derive 6s ease-in-out infinite alternate; }
+.mhie-derive-mi { animation: mhie-derive 4.4s ease-in-out -1s infinite alternate; }
+.mhie-derive-pres { animation: mhie-derive 3.4s ease-in-out -0.7s infinite alternate; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mhie-chute-loin, .mhie-chute-mi, .mhie-chute-pres,
+  .mhie-derive-loin, .mhie-derive-mi, .mhie-derive-pres { animation: none; }
+}
+</style>
+</helmet>
+
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #D3DEE7; display: flex; flex-direction: column; overflow: hidden">
+
+  <div style="flex: 0 0 auto; height: 187px; overflow: hidden">
+    <svg width="390" height="200" viewBox="0 0 390 200" fill="none" aria-hidden="true">
+      <defs>
+        <pattern id="mhie-ciel-h" width="10" height="3.6" patternUnits="userSpaceOnUse">
+          <path d="M-1 1.8h12" stroke="#9DB3C4" stroke-width="1.7" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mhie-ciel-v" width="3.6" height="10" patternUnits="userSpaceOnUse">
+          <path d="M1.8-1v12" stroke="#8299AB" stroke-width="1.5" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mhie-ciel-d1" width="10" height="3.8" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">
+          <path d="M-1 1.9h12" stroke="#AFC3D1" stroke-width="1.6" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mhie-ciel-d2" width="10" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(-42)">
+          <path d="M-1 2h12" stroke="#A2B7C7" stroke-width="1.5" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mhie-neige-h" width="11" height="4.2" patternUnits="userSpaceOnUse">
+          <path d="M-1 2.1h13" stroke="#B8C9D6" stroke-width="1.4" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mhie-neige-d" width="11" height="4.4" patternUnits="userSpaceOnUse" patternTransform="rotate(-36)">
+          <path d="M-1 2.2h13" stroke="#C6D4DF" stroke-width="1.3" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mhie-bois" width="7" height="3.2" patternUnits="userSpaceOnUse" patternTransform="rotate(8)">
+          <path d="M-1 1.6h9" stroke="#8E5330" stroke-width="1.2" stroke-linecap="round"></path>
+        </pattern>
+        <clipPath id="mhie-zone-sol">
+          <path d="M0 122c34-4 64 2 100-1 36-3 66 3 104 1 38-2 74 3 112 0 30-2 56 2 74 1v78H0z"></path>
+        </clipPath>
+        <clipPath id="mhie-zone-murs"><path d="M238 116h52v28h-52z"></path></clipPath>
+      </defs>
+
+      <rect width="390" height="200" fill="#D3DEE7"></rect>
+      <rect width="390" height="200" fill="url(#mhie-ciel-h)" opacity="0.45"></rect>
+      <rect width="390" height="200" fill="url(#mhie-ciel-d1)" opacity="0.35"></rect>
+      <rect width="390" height="100" fill="url(#mhie-ciel-v)" opacity="0.35"></rect>
+      <rect width="390" height="56" fill="url(#mhie-ciel-d2)" opacity="0.35"></rect>
+
+      <circle cx="64" cy="38" r="15" fill="#F6EFD9" fill-opacity="0.9"></circle>
+      <path d="M64 23c8.5 0 15 6.5 15 15s-6.5 15-15 15-15-6.5-15-15 6.5-15 15-15z" stroke="#4A3F36" stroke-width="1.3" stroke-linecap="round" stroke-opacity="0.4"></path>
+
+      <path d="M0 100c40-14 90-18 140-8 40 8 70-10 120-12 50-2 90 10 130 4v40H0z" fill="#E6EEF4"></path>
+      <path d="M0 100c40-14 90-18 140-8 40 8 70-10 120-12 50-2 90 10 130 4" stroke="#4A3F36" stroke-width="1.3" stroke-linecap="round" stroke-opacity="0.4"></path>
+
+      <g opacity="0.55">
+        <g transform="translate(22 100) scale(0.4)">
+          <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#4F7A6B"></path>
+          <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+          <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+        </g>
+        <g transform="translate(122 95) scale(0.42)">
+          <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#4F7A6B"></path>
+          <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+          <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+        </g>
+        <g transform="translate(146 96) scale(0.36)">
+          <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#4F7A6B"></path>
+          <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+          <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+        </g>
+        <g transform="translate(172 97) scale(0.44)">
+          <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#4F7A6B"></path>
+          <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+          <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+        </g>
+        <g transform="translate(352 90) scale(0.4)">
+          <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#4F7A6B"></path>
+          <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+          <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+        </g>
+      </g>
+
+      <path d="M0 122c34-4 64 2 100-1 36-3 66 3 104 1 38-2 74 3 112 0 30-2 56 2 74 1v78H0z" fill="#F8FBFD"></path>
+      <g clip-path="url(#mhie-zone-sol)">
+        <rect y="118" width="390" height="82" fill="url(#mhie-neige-h)" opacity="0.35"></rect>
+        <rect y="150" width="390" height="50" fill="url(#mhie-neige-d)" opacity="0.4"></rect>
+        <rect y="178" width="390" height="22" fill="url(#mhie-neige-h)" opacity="0.35"></rect>
+      </g>
+      <path d="M0 122c34-4 64 2 100-1 36-3 66 3 104 1 38-2 74 3 112 0 30-2 56 2 74 1" stroke="#4A3F36" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.5"></path>
+      <path d="M0 124c36-4 60 2 102-1 36-3 62 3 104 1 38-2 70 3 110 0 30-2 54 2 74 1" stroke="#4A3F36" stroke-width="1" stroke-linecap="round" stroke-opacity="0.22"></path>
+
+      <g transform="translate(212 132) scale(0.62)">
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#3A6A55"></path>
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" stroke="#4A3F36" stroke-width="1.2" stroke-linejoin="round" stroke-opacity="0.55" vector-effect="non-scaling-stroke"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+        <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+      </g>
+      <g transform="translate(318 134) scale(0.7)">
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#3A6A55"></path>
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" stroke="#4A3F36" stroke-width="1.2" stroke-linejoin="round" stroke-opacity="0.55" vector-effect="non-scaling-stroke"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+        <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+      </g>
+
+      <path d="M278 92h8v16h-8z" fill="#8A4F2D"></path>
+      <path d="M278 92h8v16h-8z" stroke="#4A3F36" stroke-width="1.3" stroke-linejoin="round"></path>
+      <path d="M276.5 92.5Q282 87.5 287.5 92.5Z" fill="#FFFFFF" stroke="#4A3F36" stroke-width="1" stroke-opacity="0.5" stroke-linejoin="round"></path>
+
+      <path d="M238 116h52v28h-52z" fill="#A8683D"></path>
+      <g clip-path="url(#mhie-zone-murs)">
+        <rect x="238" y="116" width="52" height="28" fill="url(#mhie-bois)" opacity="0.45"></rect>
+      </g>
+      <path d="M238 122h52M238 128h52M238 134h52M238 140h52" stroke="#7A4524" stroke-width="1" stroke-linecap="round" stroke-opacity="0.75"></path>
+      <path d="M238 116h52v28h-52z" stroke="#4A3F36" stroke-width="1.5" stroke-linejoin="round"></path>
+
+      <path d="M243 125h10v9h-10z" fill="#F6C75A"></path>
+      <path d="M277 125h10v9h-10z" fill="#F6C75A"></path>
+      <path d="M248 125v9M243 129.5h10M282 125v9M277 129.5h10" stroke="#6B3B20" stroke-width="1"></path>
+      <path d="M243 125h10v9h-10zM277 125h10v9h-10z" stroke="#4A3F36" stroke-width="1.3" stroke-linejoin="round"></path>
+      <path d="M242 134.5h12M276 134.5h12" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"></path>
+
+      <path d="M259 128h11v16h-11z" fill="#5C3219"></path>
+      <path d="M259 128h11v16h-11z" stroke="#4A3F36" stroke-width="1.3" stroke-linejoin="round"></path>
+      <circle cx="267.2" cy="136.5" r="0.9" fill="#E0B45A"></circle>
+
+      <path d="M226 118L302 118L300 123L228 123Z" fill="#6B3B20"></path>
+      <path d="M226 118L302 118L300 123L228 123Z" stroke="#4A3F36" stroke-width="1.2" stroke-linejoin="round"></path>
+      <path d="M224 118L264 86L304 118Q299 123.5 293 120Q288 125 282 121Q276 126 270 121Q264 125.5 258 121Q252 126 246 121Q240 125 235 120.5Q229 123.5 224 118Z" fill="#FFFFFF"></path>
+      <path d="M224 118L264 86L304 118Q299 123.5 293 120Q288 125 282 121Q276 126 270 121Q264 125.5 258 121Q252 126 246 121Q240 125 235 120.5Q229 123.5 224 118Z" stroke="#4A3F36" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"></path>
+      <path d="M226 116.5L264 87.5L302 116.5" stroke="#4A3F36" stroke-width="1" stroke-linecap="round" stroke-opacity="0.35"></path>
+      <path d="M244 110q8-4 14-2M270 100q8 1 12 6" stroke="#B8C9D6" stroke-width="1.3" stroke-linecap="round"></path>
+
+      <path d="M230 146c6-5 16-5 26-3 10 2 22-3 32-1 6 1 12 2 16 4z" fill="#F8FBFD"></path>
+      <path d="M230 146c6-5 16-5 26-3 10 2 22-3 32-1 6 1 12 2 16 4" stroke="#4A3F36" stroke-width="1.1" stroke-linecap="round" stroke-opacity="0.4"></path>
+
+      <g transform="translate(34 170) scale(1.15)">
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#2F5D46"></path>
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" stroke="#4A3F36" stroke-width="1.5" stroke-linejoin="round" stroke-opacity="0.75" vector-effect="non-scaling-stroke"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36M-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22M-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6" stroke="#4A3F36" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.4" vector-effect="non-scaling-stroke"></path>
+        <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+      </g>
+      <g transform="translate(80 160) scale(0.9)">
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#2F5D46"></path>
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" stroke="#4A3F36" stroke-width="1.5" stroke-linejoin="round" stroke-opacity="0.75" vector-effect="non-scaling-stroke"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36M-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22M-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6" stroke="#4A3F36" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.4" vector-effect="non-scaling-stroke"></path>
+        <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+      </g>
+      <g transform="translate(342 172) scale(1.2)">
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#2F5D46"></path>
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" stroke="#4A3F36" stroke-width="1.5" stroke-linejoin="round" stroke-opacity="0.75" vector-effect="non-scaling-stroke"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36M-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22M-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6" stroke="#4A3F36" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.4" vector-effect="non-scaling-stroke"></path>
+        <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+      </g>
+      <g transform="translate(374 158) scale(0.8)">
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" fill="#2F5D46"></path>
+        <path d="M0 -54L-11 -36H11ZM0 -44L-15 -22H15ZM0 -32L-19 -6H19Z" stroke="#4A3F36" stroke-width="1.5" stroke-linejoin="round" stroke-opacity="0.75" vector-effect="non-scaling-stroke"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36ZM-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22ZM-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6ZM0 -54L-4 -48Q-2 -49.5 0 -48Q2 -49.5 4 -48Z" fill="#FFFFFF"></path>
+        <path d="M-11 -36Q-7 -40 -3.5 -37.5Q0 -40.5 3.5 -37.5Q7 -40 11 -36M-15 -22Q-10 -26.5 -5 -23.5Q0 -27 5 -23.5Q10 -26.5 15 -22M-19 -6Q-13 -11 -6.5 -7.5Q0 -11.5 6.5 -7.5Q13 -11 19 -6" stroke="#4A3F36" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.4" vector-effect="non-scaling-stroke"></path>
+        <path d="M-2.5 -6h5v6h-5z" fill="#6B3B20"></path>
+      </g>
+
+      <g class="mhie-derive-loin">
+        <g class="mhie-chute-loin">
+          <g fill="#FFFFFF" fill-opacity="0.75">
+            <circle cx="12" cy="18" r="1.1"></circle><circle cx="48" cy="64" r="1"></circle><circle cx="83" cy="140" r="1.2"></circle><circle cx="110" cy="30" r="1"></circle>
+            <circle cx="141" cy="96" r="1.1"></circle><circle cx="176" cy="170" r="1"></circle><circle cx="205" cy="52" r="1.2"></circle><circle cx="232" cy="122" r="1"></circle>
+            <circle cx="262" cy="12" r="1.1"></circle><circle cx="290" cy="84" r="1"></circle><circle cx="318" cy="154" r="1.2"></circle><circle cx="347" cy="40" r="1"></circle>
+            <circle cx="372" cy="110" r="1.1"></circle><circle cx="28" cy="182" r="1"></circle><circle cx="156" cy="8" r="1.2"></circle><circle cx="242" cy="190" r="1"></circle>
+          </g>
+          <g transform="translate(0 -200)" fill="#FFFFFF" fill-opacity="0.75">
+            <circle cx="12" cy="18" r="1.1"></circle><circle cx="48" cy="64" r="1"></circle><circle cx="83" cy="140" r="1.2"></circle><circle cx="110" cy="30" r="1"></circle>
+            <circle cx="141" cy="96" r="1.1"></circle><circle cx="176" cy="170" r="1"></circle><circle cx="205" cy="52" r="1.2"></circle><circle cx="232" cy="122" r="1"></circle>
+            <circle cx="262" cy="12" r="1.1"></circle><circle cx="290" cy="84" r="1"></circle><circle cx="318" cy="154" r="1.2"></circle><circle cx="347" cy="40" r="1"></circle>
+            <circle cx="372" cy="110" r="1.1"></circle><circle cx="28" cy="182" r="1"></circle><circle cx="156" cy="8" r="1.2"></circle><circle cx="242" cy="190" r="1"></circle>
+          </g>
+        </g>
+      </g>
+
+      <g class="mhie-derive-mi">
+        <g class="mhie-chute-mi">
+          <g fill="#FFFFFF" stroke="#9FB3C2" stroke-width="0.5" stroke-opacity="0.6">
+            <circle cx="22" cy="48" r="1.8"></circle><circle cx="66" cy="118" r="1.6"></circle><circle cx="98" cy="190" r="2"></circle><circle cx="130" cy="70" r="1.7"></circle>
+            <circle cx="168" cy="138" r="1.9"></circle><circle cx="198" cy="22" r="1.6"></circle><circle cx="226" cy="92" r="2"></circle><circle cx="258" cy="164" r="1.7"></circle>
+            <circle cx="296" cy="46" r="1.8"></circle><circle cx="330" cy="124" r="1.6"></circle><circle cx="362" cy="184" r="1.9"></circle><circle cx="380" cy="62" r="1.7"></circle>
+          </g>
+          <g transform="translate(0 -200)" fill="#FFFFFF" stroke="#9FB3C2" stroke-width="0.5" stroke-opacity="0.6">
+            <circle cx="22" cy="48" r="1.8"></circle><circle cx="66" cy="118" r="1.6"></circle><circle cx="98" cy="190" r="2"></circle><circle cx="130" cy="70" r="1.7"></circle>
+            <circle cx="168" cy="138" r="1.9"></circle><circle cx="198" cy="22" r="1.6"></circle><circle cx="226" cy="92" r="2"></circle><circle cx="258" cy="164" r="1.7"></circle>
+            <circle cx="296" cy="46" r="1.8"></circle><circle cx="330" cy="124" r="1.6"></circle><circle cx="362" cy="184" r="1.9"></circle><circle cx="380" cy="62" r="1.7"></circle>
+          </g>
+        </g>
+      </g>
+
+      <g class="mhie-derive-pres">
+        <g class="mhie-chute-pres">
+          <g fill="#FFFFFF" stroke="#8FA6B8" stroke-width="0.7" stroke-opacity="0.7">
+            <circle cx="40" cy="96" r="2.7"></circle><circle cx="92" cy="22" r="2.4"></circle><circle cx="150" cy="160" r="3"></circle><circle cx="214" cy="64" r="2.5"></circle>
+            <circle cx="270" cy="130" r="2.8"></circle><circle cx="320" cy="14" r="2.4"></circle><circle cx="358" cy="92" r="2.9"></circle><circle cx="8" cy="150" r="2.5"></circle>
+          </g>
+          <g transform="translate(0 -200)" fill="#FFFFFF" stroke="#8FA6B8" stroke-width="0.7" stroke-opacity="0.7">
+            <circle cx="40" cy="96" r="2.7"></circle><circle cx="92" cy="22" r="2.4"></circle><circle cx="150" cy="160" r="3"></circle><circle cx="214" cy="64" r="2.5"></circle>
+            <circle cx="270" cy="130" r="2.8"></circle><circle cx="320" cy="14" r="2.4"></circle><circle cx="358" cy="92" r="2.9"></circle><circle cx="8" cy="150" r="2.5"></circle>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <section aria-label="Énigme du moment" style="position: relative; flex: 1 1 auto; min-height: 0; margin-top: -60px; background: #EEF3F7; border-radius: 30px 26px 0 0; box-shadow: 0 -10px 30px rgba(35, 45, 55, 0.18); overflow: hidden">
+
+    <svg width="390" height="717" viewBox="0 0 390 717" fill="none" aria-hidden="true" style="position: absolute; left: 0; top: 0; z-index: 0">
+      <defs>
+        <pattern id="mhie-papier-h" width="11" height="4.4" patternUnits="userSpaceOnUse">
+          <path d="M-1 2.2h13" stroke="#9DB3C4" stroke-width="1.4" stroke-linecap="round"></path>
+        </pattern>
+        <pattern id="mhie-papier-d" width="11" height="4.6" patternUnits="userSpaceOnUse" patternTransform="rotate(36)">
+          <path d="M-1 2.3h13" stroke="#B8C9D6" stroke-width="1.3" stroke-linecap="round"></path>
+        </pattern>
+      </defs>
+      <rect width="390" height="717" fill="url(#mhie-papier-h)" opacity="0.14"></rect>
+      <rect width="390" height="717" fill="url(#mhie-papier-d)" opacity="0.12"></rect>
+    </svg>
+
+    <div style="position: relative; z-index: 1; height: 100%; box-sizing: border-box; padding: 30px 20px 26px; display: flex; flex-direction: column; gap: 12px">
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font-family: 'Fraunces', Georgia, serif; font-size: 25px; font-weight: 700; color: #23201E">Bonjour, Camille</span>
+          <span style="display: flex; align-items: center; gap: 7px; font-size: 13px; color: #55616B">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4E7896" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M9.5 4.5L12 7l2.5-2.5M9.5 19.5L12 17l2.5 2.5"></path></svg>
+            Lundi 12 janvier · Neige, −2 °C
+          </span>
+        </div>
+        <a href="#parametres" aria-label="Paramètres" style="width: 46px; height: 46px; flex: 0 0 auto; border-radius: 999px; background: #FFFFFF; border: 1.4px solid rgba(74, 63, 54, 0.4); box-shadow: 1px 1.5px 0 rgba(74, 63, 54, 0.18); display: flex; align-items: center; justify-content: center; color: #23201E">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18.88 9.87 L21.46 10.38 L21.46 13.62 L18.88 14.13 L18.37 15.36 L19.84 17.54 L17.54 19.84 L15.36 18.37 L14.13 18.88 L13.62 21.46 L10.38 21.46 L9.87 18.88 L8.64 18.37 L6.46 19.84 L4.16 17.54 L5.63 15.36 L5.12 14.13 L2.54 13.62 L2.54 10.38 L5.12 9.87 L5.63 8.64 L4.16 6.46 L6.46 4.16 L8.64 5.63 L9.87 5.12 L10.38 2.54 L13.62 2.54 L14.13 5.12 L15.36 5.63 L17.54 4.16 L19.84 6.46 L18.37 8.64Z" stroke-width="1.9"></path><circle cx="12" cy="12" r="3" stroke-width="1.9"></circle></svg>
+        </a>
+      </div>
+
+      <div style="flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; justify-content: center">
+      <div role="group" aria-label="Énigme" style="position: relative; width: 290px; height: 372px; flex: 0 0 auto; align-self: center; transform: rotate(-2deg) scale(1.1)">
+        <svg width="290" height="372" viewBox="0 -42 290 372" fill="none" aria-hidden="true" style="position: absolute; left: 0; top: 0">
+          <defs>
+            <pattern id="mhie-etq-h" width="10" height="4" patternUnits="userSpaceOnUse">
+              <path d="M-1 2h12" stroke="#B8C9D6" stroke-width="1.4" stroke-linecap="round"></path>
+            </pattern>
+            <pattern id="mhie-etq-d" width="10" height="4.2" patternUnits="userSpaceOnUse" patternTransform="rotate(-38)">
+              <path d="M-1 2.1h12" stroke="#B8C9D6" stroke-width="1.3" stroke-linecap="round"></path>
+            </pattern>
+            <clipPath id="mhie-etq-zone"><path d="M62 1.5H229L288 47V319Q288 327.5 279.5 327.5H10.5Q2 327.5 2 319V47Z"></path></clipPath>
+          </defs>
+          <path d="M62 1.5H229L288 47V319Q288 327.5 279.5 327.5H10.5Q2 327.5 2 319V47Z" fill="#FFFFFF"></path>
+          <g clip-path="url(#mhie-etq-zone)">
+            <rect width="290" height="330" fill="url(#mhie-etq-h)" opacity="0.2"></rect>
+            <rect width="290" height="120" fill="url(#mhie-etq-d)" opacity="0.16"></rect>
+          </g>
+          <path d="M67 14H224L275 53V310Q275 315 270 315H20Q15 315 15 310V53Z" stroke="#3A6A55" stroke-width="1.3" stroke-dasharray="5 5" stroke-linecap="round" stroke-opacity="0.38"></path>
+          <path d="M62 1.5H229L288 47V319Q288 327.5 279.5 327.5H10.5Q2 327.5 2 319V47Z" stroke="#4A3F36" stroke-width="1.6" stroke-linejoin="round" stroke-opacity="0.5"></path>
+          <path d="M62 1.5H229L288 47V319Q288 327.5 279.5 327.5H10.5Q2 327.5 2 319V47Z" transform="translate(1.2 1.5)" stroke="#4A3F36" stroke-width="1" stroke-linejoin="round" stroke-opacity="0.225"></path>
+          <circle cx="145" cy="34" r="13" stroke="#A8683D" stroke-width="3.4"></circle>
+          <circle cx="145" cy="34" r="9" fill="#EEF3F7"></circle>
+          <circle cx="145" cy="34" r="9" stroke="#4A3F36" stroke-width="1.1" stroke-opacity="0.5"></circle>
+          <path d="M140 33C133 12 138-10 145-26M150 33C157 12 152-10 145-26" stroke="#8A4F2D" stroke-width="2.3" stroke-linecap="round"></path>
+          <path d="M145-27C139-33 130-36 120-38M145-27C151-34 160-38 172-39" stroke="#8A4F2D" stroke-width="2" stroke-linecap="round"></path>
+          <circle cx="145" cy="-27" r="3.4" fill="#8A4F2D"></circle>
+        </svg>
+        <div style="position: absolute; left: 32px; right: 32px; top: 104px; bottom: 34px; display: flex; flex-direction: column; justify-content: center; gap: 14px">
+        <span style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+          <span style="font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #2F5D46">Énigme</span>
+          <span style="font-size: 12px; font-weight: 700; color: #2F5D46; background: #E3EEE8; border-radius: 999px; padding: 3px 10px">4 – 7 ans</span>
+        </span>
+        <span style="font-family: 'Fraunces', Georgia, serif; font-size: 23px; line-height: 31px; font-weight: 600; color: #23201E">Je tombe du ciel sans jamais me faire mal, et je disparais dès qu'on me serre dans la main. <span style="white-space: nowrap">Qui suis-je&nbsp;?</span></span>
+        </div>
+      </div>
+      </div>
+
+      <div style="flex: 0 0 auto; display: flex; flex-direction: column; gap: 4px">
+        <a href="MvpHiverReponse.dc.html" style="min-height: 52px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font: inherit; font-size: 16px; font-weight: 800; color: #FFFFFF; background: #3A6A55; border: 1.4px solid rgba(74, 63, 54, 0.4); border-radius: 999px; box-shadow: 1px 1.5px 0 rgba(74, 63, 54, 0.18); cursor: pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5a7.5 7.5 0 0 1 13-4.6l2 2"></path><path d="M19.5 4.5v4.4h-4.4"></path><path d="M19.5 12.5a7.5 7.5 0 0 1-13 4.6l-2-2"></path><path d="M4.5 19.5v-4.4h4.4"></path></svg>Voir la réponse</a>
+        <button type="button" style="min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; font: inherit; font-size: 15px; font-weight: 700; color: #2F5D46; background: transparent; border: 0; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4.5"></rect><circle cx="9" cy="9" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="15" cy="9" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="9" cy="15" r="1.3" fill="currentColor" stroke="none"></circle><circle cx="15" cy="15" r="1.3" fill="currentColor" stroke="none"></circle></svg>Une autre énigme</button>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

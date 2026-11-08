@@ -114,3 +114,30 @@ Canevas Figma-like publié comme artifact privé :
 Planches : Fondations, Accueil, Bibliothèque, Filtres, Fiche jeu.
 Les écrans sont reliés entre eux : en mode lecture, on navigue de la bibliothèque à la
 fiche, aux filtres et retour.
+
+## Écrans du MVP — énigmes
+
+Proposés le 8 novembre 2026, rangée « MVP — énigmes » du canevas. Huit écrans : une paire
+énigme / réponse par bandeau animé (beau temps, nuit, hiver, automne).
+
+- Même cadre que l'accueil crayonné : le bandeau animé en haut, la feuille relevée à 85 %
+  (717 px sur 844), sans poignée : elle ne se déplace pas.
+- Dans la feuille, seulement la salutation (« Bonsoir » la nuit), la date et la météo, un
+  **engrenage** en haut à droite pour les paramètres (pastille de 46 px), puis une
+  **étiquette à œillet** suspendue à sa ficelle. Pas de barre de navigation : le MVP n'a
+  qu'un écran.
+- Recto incliné de −2° : l'énigme et une pastille d'âge. Verso incliné de +2°, en aplat
+  de couleur : la réponse et une phrase d'explication.
+- Action principale en bas : « Voir la réponse » sur le recto, « Une autre énigme » sur le
+  verso ; l'action secondaire est un lien texte en dessous.
+- Chaque bandeau donne sa palette à la feuille, à l'étiquette et au bouton :
+
+| Bandeau | Feuille | Recto | Verso | Bouton |
+| --- | --- | --- | --- | --- |
+| Beau temps | `#FEF3D4` | blanc, hachures ciel | soleil `#FBD23E`, texte encre | `#0E6E99` |
+| Nuit | `#262231` | `#322C3E`, texte crème | lune `#F3E7C4`, texte `#1F2340` | `#F3E7C4`, texte `#1F2340` |
+| Hiver | `#EEF3F7` | blanc, hachures givre | sapin `#3A6A55`, texte blanc | `#3A6A55` |
+| Automne | `#FBEAD5` | `#FFFBF3`, hachures ambre | rouge `#C8432B`, texte blanc | `#B8461F` |
+
+Les écrans sont générés par `design/outils/generer_ecrans_mvp.py`, qui recopie la scène
+de chaque planche d'étude : une scène modifiée se propage en relançant le script.
