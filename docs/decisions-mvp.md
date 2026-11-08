@@ -64,8 +64,9 @@ validé ou généré quoi), sans construire de comptes tant que je suis le seul 
 
 ## Encore à trancher
 
-- La **stack** (prérequis du `CLAUDE.md`).
-- Le **hors-ligne** : des énigmes sont du texte léger, faciles à mettre en cache. C'est le
-  bon moment pour décider, l'enjeu pèse sur l'architecture.
+- ~~La **stack**~~ : tranchée le 8 novembre 2026, voir la [stack technique](stack-technique.md).
+  Le `CLAUDE.md` peut maintenant s'écrire.
+- ~~Le **hors-ligne**~~ : tranché le 8 novembre 2026 — cache des énigmes persisté sur le
+  téléphone, pas de base locale tant que le contenu reste du texte en lecture.
 - La place des énigmes dans les **maquettes** existantes, dessinées autour de la
   bibliothèque de jeux : nouvelle famille dans la bibliothèque, ou écran à part ?
