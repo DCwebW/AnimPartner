@@ -1,0 +1,21 @@
+{
+  "name": "animpartner",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present && prettier --check .",
+    "format": "prettier --write .",
+    "test": "npm run test --workspaces --if-present",
+    "web:export": "npm run web:export --workspace @animpartner/mobile"
+  },
+  "devDependencies": {
+    "prettier": "3.10.0"
+  }
+}

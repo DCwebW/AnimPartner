@@ -9,8 +9,8 @@ le construit, comment on travaille et ce qu'on ne fait jamais.
 - **MVP en cours : un fournisseur d'énigmes et devinettes.** Un seul écran : une étiquette
   porte une énigme, se retourne pour montrer la réponse, et glisse pour laisser place à la
   suivante. Bibliothèque de jeux, planning et groupes viendront après.
-- Le design des écrans du MVP est terminé. **Le code applicatif n'existe pas encore** :
-  la première issue pose le squelette du projet.
+- Le design des écrans du MVP est terminé. Le squelette est posé (issue #1) : monorepo,
+  application Expo avec un écran d'accueil vide titré « AnimPartner ».
 - Utilisateur unique pour l'instant (le porteur du projet), ouverture progressive à
   d'autres animateurs ensuite. Le schéma doit savoir qui a créé, généré ou validé quoi,
   sans construire de comptes.
@@ -52,16 +52,26 @@ docs/            brief, décisions, stack, backlog
 
 ### Commandes
 
-> À confirmer par l'issue de squelette, qui doit mettre ce tableau à jour.
+Espaces de travail npm, Node 22 (`.nvmrc`). Sauf mention contraire, à lancer à la racine.
 
 | Commande | Rôle |
 | --- | --- |
-| `npm install` | Installe les espaces de travail |
-| `npm run typecheck` | `tsc --noEmit` sur tout le dépôt |
-| `npm run lint` | ESLint et Prettier |
-| `npm test` | Jest |
-| `npm run web:export` | `npx expo export --platform web` dans `apps/mobile` |
-| `npx expo start` | Serveur de développement, QR code pour Expo Go |
+| `npm install` (ou `npm ci` sur une installation propre) | Installe tous les espaces de travail |
+| `npm run typecheck` | `tsc --noEmit` dans chaque espace de travail (`apps/mobile`, `packages/shared`) |
+| `npm run lint` | ESLint (`expo lint` dans `apps/mobile`), puis `prettier --check .` |
+| `npm run format` | `prettier --write .` |
+| `npm test` | Jest (`jest-expo`, React Native Testing Library) dans chaque espace de travail |
+| `npm run web:export` | `expo export --platform web` dans `apps/mobile`, sortie dans `apps/mobile/dist` |
+| `cd apps/mobile && npx expo start` | Serveur de développement, QR code pour Expo Go |
+| `cd apps/mobile && npx expo install <paquet>` | Ajoute une dépendance à la version compatible avec le SDK |
+
+- Les routes vivent dans `apps/mobile/src/app/` (Expo Router) ; les tests dans
+  `apps/mobile/src/__tests__/`, jamais dans `src/app/`, où chaque fichier devient une
+  route. L'alias `@/` pointe vers `apps/mobile/src/`.
+- Dans le cloud, `api.expo.dev` peut être bloqué : préfixer `npx expo install` par
+  `EXPO_OFFLINE=1`. Les versions viennent alors du `bundledNativeModules.json` du paquet
+  `expo` installé, qui est la référence du SDK.
+- Prettier ignore `design/`, `docs/` et les fichiers Markdown.
 
 ## Comment on travaille : des agents, une issue à la fois
 

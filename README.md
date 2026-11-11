@@ -3,7 +3,7 @@
 Application d'aide aux animateurs et animatrices d'enfants : mise en place d'animations,
 bibliothèque de jeux et planning. **Nom de travail.**
 
-Phase en cours : **design**. Pas encore de code applicatif.
+Phase en cours : **MVP, écran d'énigmes**. Le squelette est posé (issue #1) : voir [`CLAUDE.md`](CLAUDE.md) pour les commandes.
 
 Dépôt : <https://github.com/DCwebW/AnimPartner> (privé)
 
