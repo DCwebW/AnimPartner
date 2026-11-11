@@ -29,12 +29,29 @@ validé ou généré quoi), sans construire de comptes tant que je suis le seul 
   et vérification des ambiguïtés (une devinette doit n'avoir qu'une bonne réponse).
 - La génération en lot coûte quelques centimes par mois via l'API à l'usage.
 
+### Révision du 11 novembre 2026
+
+- **Le dépôt devient la source des énigmes validées.** Elles vivent dans le catalogue du
+  dépôt ; Neon n'en est qu'une copie, publiée par la CI à chaque fusion.
+- **La génération passe par une routine Claude Code**, chaque mardi, sur l'abonnement :
+  trois énigmes proposées en PR. Plus de job sur le Worker ni de coût d'API.
+- **La validation se fait par la fusion de la PR**, plus par un écran d'admin. Je retire
+  les énigmes refusées avant de fusionner. L'historique Git garde qui a proposé et validé
+  quoi.
+- **Pas d'écran d'admin dans le MVP.** Le point de vigilance « admin protégé » ci-dessous
+  devient sans objet tant qu'aucune route d'écriture n'est exposée.
+
+Les trois agents planifiés (designer, énigmes, codeur) sont décrits dans
+[`docs/agents/`](agents/README.md).
+
 ## Ordre de développement
 
 1. Schéma de base
 2. Affichage des énigmes
-3. Écran d'admin (validation des `draft`)
-4. Job de génération, en dernier
+3. ~~Écran d'admin (validation des `draft`)~~ — remplacé par la validation en PR
+   (11 novembre 2026)
+4. ~~Job de génération~~ — remplacé par la routine du mardi ; reste la copie du catalogue
+   vers Neon par la CI
 
 ## Méthode de travail
 

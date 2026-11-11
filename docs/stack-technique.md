@@ -9,11 +9,17 @@
 Téléphone (APK, Expo Go en développement)
    │  HTTPS
    ▼
-API Hono sur Cloudflare Workers ──── Cron Trigger : job de génération ──► API Anthropic
+API Hono sur Cloudflare Workers
    │  @neondatabase/serverless
    ▼
-Neon (Postgres)
+Neon (Postgres) ◄── CI à chaque fusion ── catalogue d'énigmes dans le dépôt
+                                               ▲
+                                   PR de l'agent des énigmes, validée par fusion
 ```
+
+*Révisé le 11 novembre 2026 : le dépôt est la source des énigmes validées, Neon en est une
+copie publiée. Le job de génération sur le Worker est abandonné au profit d'une routine
+Claude Code (voir [`docs/agents/`](agents/README.md)).*
 
 L'application ne parle **jamais** directement à Neon. La chaîne de connexion dans un APK
 serait lisible par quiconque le décompile : elle reste côté Worker, en secret.
@@ -52,9 +58,9 @@ jalons.
 - Accès à Neon par `@neondatabase/serverless` (pilote HTTP, adapté aux Workers) et
   **Drizzle ORM**.
 - **Zod** valide chaque entrée et chaque sortie.
-- Secrets posés avec `wrangler secret put` : chaîne Neon, clé Anthropic, jeton d'admin.
-- **Admin** : les routes de validation des `draft` exigent un jeton porteur vérifié par le
-  Worker. Suffisant tant que je suis seul ; de vrais comptes viendront avec l'ouverture.
+- Secrets posés avec `wrangler secret put` : chaîne Neon.
+- **Pas de route d'admin dans le MVP** : la validation se fait par la fusion des PR.
+  L'API n'expose que la lecture du catalogue publié.
 
 ## Base de données
 
@@ -71,22 +77,24 @@ Un seul dépôt, organisé en espaces de travail :
 
 - `apps/mobile` — l'application Expo ;
 - `apps/api` — le Worker, avec le schéma Drizzle ;
-- `packages/shared` — les schémas Zod et les types, communs à l'app, à l'API et au job.
+- `packages/shared` — les schémas Zod et les types, communs à l'app, à l'API et à la CI.
 
-Un même schéma Zod décrit une énigme partout : dans l'écran, dans l'API et dans la sortie
-du job de génération.
+Un même schéma Zod décrit une énigme partout : dans l'écran, dans l'API, dans le
+catalogue du dépôt et dans la copie vers Neon.
 
-## Job de génération (en dernier)
+## Génération des énigmes
 
-- **Cron Trigger** du même Worker.
-- SDK Anthropic en TypeScript, sortie structurée validée par Zod avant d'entrer en `draft`.
-- **Dédoublonnage** : d'abord en demandant à Claude de comparer avec les énigmes existantes,
-  tant que le catalogue reste court. Ensuite, embeddings (Anthropic n'en fournit pas : un
-  service tiers comme Voyage AI) et extension **pgvector** de Neon.
-- **Vigilance** : le forfait gratuit de Workers limite fortement le temps CPU par
-  invocation. Le temps passé à attendre l'API Anthropic n'en consomme pas, mais l'analyse
-  et la validation des réponses, si. À mesurer avant de choisir entre forfait gratuit et
-  payant.
+*Révisé le 11 novembre 2026.*
+
+- **Routine Claude Code** du mardi, sur l'abonnement : pas de clé d'API Anthropic, pas de
+  coût à l'usage. Fiche : [`docs/agents/enigmes.md`](agents/enigmes.md).
+- Trois énigmes par semaine, proposées en PR dans le catalogue du dépôt, validées par
+  le schéma Zod dans les tests. **La fusion vaut validation.**
+- **Dédoublonnage** : l'agent lit tout le catalogue avant d'écrire. Tant que le catalogue
+  tient dans un fichier, ni embeddings ni pgvector ne sont nécessaires.
+- **Publication** : un workflow GitHub Actions copie le catalogue dans Neon à chaque
+  fusion sur `main`. À mettre en place avec les issues de l'API ; c'est le seul accès en
+  écriture à la base de production.
 
 ## Qualité et vérification
 
@@ -110,10 +118,11 @@ Pas d'émulateur Android : mon PC n'est pas assez puissant. Trois niveaux de vé
 - Environnement : version de Node fixée, installation des dépendances, accès réseau au
   registre npm et à Neon, **secrets de développement uniquement**.
 - Les agents dans le cloud couvrent les niveaux 1 et 2. Le niveau 4 reste le mien.
-- **Voir le travail d'un agent** : je récupère sa branche et je lance `npx expo start` sur
-  mon PC (Metro est léger, ce n'est pas un émulateur). Piste à confirmer : une GitHub Action
-  qui publie la branche avec EAS Update et poste un QR code dans la PR
-  (`expo/expo-github-action`).
+- **Voir le travail d'un agent** : une préversion EAS Update par PR, ouverte dans Expo Go
+  depuis le lien du commentaire (issue #4). À défaut, je récupère la branche et je lance
+  `npx expo start` sur mon PC.
+- **Agents planifiés** : designer le lundi, énigmes le mardi, codeur le jeudi et le
+  vendredi, en routines Claude Code. Voir [`docs/agents/`](agents/README.md).
 
 ## Déploiement
 
@@ -122,7 +131,6 @@ Pas d'émulateur Android : mon PC n'est pas assez puissant. Trois niveaux de vé
 
 ## Encore à trancher
 
-- Le **gestionnaire de paquets** et l'outillage des espaces de travail, au moment du
-  squelette.
-- Le **forfait Workers**, selon ce que consomme le job de génération.
-- Le **service d'embeddings**, quand le dédoublonnage par comparaison ne suffira plus.
+- ~~Le gestionnaire de paquets~~ : espaces de travail npm, tranché par l'issue #1.
+- ~~Le forfait Workers~~ et ~~le service d'embeddings~~ : sans objet depuis l'abandon du
+  job de génération sur le Worker (11 novembre 2026).

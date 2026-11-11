@@ -1,0 +1,51 @@
+name: Issues depuis les designs validés
+
+# À la fusion d'une PR de design, crée l'issue de code rédigée par l'agent designer
+# dans design/propositions/<N°>-<thème>/issue.md (voir docs/agents/designer.md).
+# Première ligne : « # <titre> ». Deuxième ligne : « labels: a, b ». Le reste : le corps.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "design/propositions/*/issue.md"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  creer-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Créer une issue par issue.md ajouté
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AVANT: ${{ github.event.before }}
+          APRES: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$AVANT" = "0000000000000000000000000000000000000000" ]; then
+            fichiers=$(git ls-files 'design/propositions/*/issue.md')
+          else
+            fichiers=$(git diff --name-only --diff-filter=A "$AVANT" "$APRES" -- 'design/propositions/*/issue.md')
+          fi
+          for f in $fichiers; do
+            dossier=$(dirname "$f")
+            marqueur="Source du design : \`$dossier/\`"
+            if gh issue list --state all --search "\"$dossier/\" in:body" --json number --jq '.[0].number' | grep -q .; then
+              echo "Issue déjà créée pour $dossier, rien à faire."
+              continue
+            fi
+            titre=$(sed -n '1s/^# *//p' "$f")
+            labels=$(sed -n '2s/^labels: *//p' "$f" | sed 's/ *, */,/g; s/ *$//')
+            corps=$(mktemp)
+            { tail -n +3 "$f"; printf '\n---\n%s\n' "$marqueur"; } > "$corps"
+            args=(--title "$titre" --body-file "$corps")
+            if [ -n "$labels" ]; then args+=(--label "$labels"); fi
+            gh issue create "${args[@]}"
+          done

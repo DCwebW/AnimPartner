@@ -90,6 +90,23 @@ du projet écrit les issues, fait la recette sur son téléphone et fusionne.
 Il n'y a **pas d'émulateur** : la vérification native se fait uniquement sur le téléphone
 du porteur, via Expo Go. D'où l'importance de la liste de la PR.
 
+### Les agents planifiés
+
+Trois routines Claude Code tournent chaque semaine. Chacune suit sa fiche dans
+[`docs/agents/`](docs/agents/README.md), qui fait foi sur ce fichier pour son rôle.
+
+| Agent | Quand | Produit | Fiche |
+| --- | --- | --- | --- |
+| Designer | Lundi | Un thème (bandeau et couleurs) ou un écran, en PR, avec l'issue de code qui va avec | [`designer.md`](docs/agents/designer.md) |
+| Énigmes | Mardi | Trois énigmes, en PR | [`enigmes.md`](docs/agents/enigmes.md) |
+| Codeur | Jeudi, vendredi | Une issue ou une reprise de PR | [`codeur.md`](docs/agents/codeur.md) |
+
+**Fusionner une PR vaut validation.** Les agents regardent l'état du dépôt, pas la date :
+tant que leur PR précédente attend, ils ne produisent rien de neuf.
+
+**Les énigmes validées vivent dans le dépôt**, qui en est la source. Neon n'en est
+qu'une copie publiée par la CI.
+
 ### Commits
 
 En français, au présent de l'indicatif, une ligne de titre qui dit ce que fait le commit :
@@ -115,6 +132,11 @@ propre idée de l'interface.
   d'exemple**, pas des données.
 - **Ne jamais modifier `design/`.** Le flux va du canevas en ligne vers le dépôt, pas
   l'inverse. Une maquette qui semble fausse se signale dans la PR ou l'issue.
+  **Seule exception** : l'agent designer écrit ses propositions dans
+  `design/propositions/<N°>-<thème>/`, et nulle part ailleurs.
+- **Thèmes validés** : un dossier de `design/propositions/` présent sur `main` est un
+  design validé. Pour une issue de thème, c'est lui la référence (`bandeau.html`,
+  `enigme.html`, `reponse.html`, `palette.json`).
 
 ## Règles techniques
 
@@ -141,11 +163,13 @@ propre idée de l'interface.
 - Secrets dans `.env` (ignoré par git) en local, dans Cloudflare et GitHub en ligne. Seul
   `.env.example` est versionné, sans valeur réelle.
 - Les agents n'utilisent que la **branche Neon de développement**, jamais la production.
-- Les routes d'admin (validation des énigmes `draft`) exigent un jeton vérifié par l'API.
+  Seule la CI écrit dans la base de production, en copiant le catalogue validé.
+- Si des routes d'admin apparaissent un jour, elles exigent un jeton vérifié par l'API.
 
 ## Ce que les agents ne font pas sans le demander
 
-- Modifier `design/`, `docs/decisions-mvp.md` ou `docs/brief-produit.md`.
+- Modifier `design/` (hors `design/propositions/` pour le designer),
+  `docs/decisions-mvp.md`, `docs/brief-produit.md` ou les fiches de `docs/agents/`.
 - Ajouter une dépendance qui n'est pas dans la stack.
 - Changer la configuration de la CI, d'EAS ou de Cloudflare hors d'une issue qui le prévoit.
 - Fusionner une PR.

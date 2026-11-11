@@ -18,6 +18,8 @@ Dépôt : <https://github.com/DCwebW/AnimPartner> (privé)
 - [`CLAUDE.md`](CLAUDE.md) — consignes lues par les agents : état du projet, stack, méthode,
   maquettes de référence, règles.
 - [`docs/backlog/`](docs/backlog) — brouillons d'issues avant création sur GitHub.
+- [`docs/agents/`](docs/agents/README.md) — les trois agents planifiés (designer, énigmes,
+  codeur), leur semaine, leurs fiches et les critères de design.
 - [`design/design-system.md`](design/design-system.md) — couleurs, typographie, rythme,
   règles d'interface, crayonné et mode sombre.
 - [`design/assets.md`](design/assets.md) — pictogrammes, familles de jeux, indicateurs,
