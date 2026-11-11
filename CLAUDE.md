@@ -109,7 +109,7 @@ Trois routines Claude Code tournent chaque semaine. Chacune suit sa fiche dans
 | --- | --- | --- | --- |
 | Designer | Lundi | Un thème (bandeau et couleurs) ou un écran, en PR, avec l'issue de code qui va avec | [`designer.md`](docs/agents/designer.md) |
 | Énigmes | Mardi | Trois énigmes, en PR | [`enigmes.md`](docs/agents/enigmes.md) |
-| Codeur | Jeudi, vendredi | Une issue ou une reprise de PR | [`codeur.md`](docs/agents/codeur.md) |
+| Codeur | Mercredi, jeudi, vendredi | Une issue ou une reprise de PR | [`codeur.md`](docs/agents/codeur.md) |
 
 **Fusionner une PR vaut validation.** Les agents regardent l'état du dépôt, pas la date :
 tant que leur PR précédente attend, ils ne produisent rien de neuf.

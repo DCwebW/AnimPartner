@@ -121,7 +121,7 @@ Pas d'émulateur Android : mon PC n'est pas assez puissant. Trois niveaux de vé
 - **Voir le travail d'un agent** : une préversion EAS Update par PR, ouverte dans Expo Go
   depuis le lien du commentaire (issue #4). À défaut, je récupère la branche et je lance
   `npx expo start` sur mon PC.
-- **Agents planifiés** : designer le lundi, énigmes le mardi, codeur le jeudi et le
+- **Agents planifiés** : designer le lundi, énigmes le mardi, codeur le mercredi, le jeudi et le
   vendredi, en routines Claude Code. Voir [`docs/agents/`](agents/README.md).
 
 ## Déploiement

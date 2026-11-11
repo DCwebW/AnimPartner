@@ -11,7 +11,7 @@
 | --- | --- | --- |
 | Lundi | **Designer** : un nouveau thème, en PR | Relit les captures ; fusionne ou commente |
 | Mardi | **Énigmes** : trois énigmes, en PR | Retire celles qu'il refuse ; fusionne |
-| Mercredi | — (la fusion de mardi suffit : la CI copiera les énigmes dans Neon) | — |
+| Mercredi | **Codeur** : une issue, en PR (la fusion de mardi suffit pour les énigmes : la CI les copiera dans Neon) | Recette sur Expo Go ; fusionne ou commente |
 | Jeudi | **Codeur** : une issue, en PR | Recette sur Expo Go ; fusionne ou commente |
 | Vendredi | **Codeur** : une autre issue, en PR | Recette ; fusionne ou commente |
 
