@@ -1,0 +1,12 @@
+# Maquettes et documents : hors du formatage automatique (design/ est en lecture seule).
+design/
+docs/
+*.md
+
+# Générés
+package-lock.json
+node_modules/
+dist/
+web-build/
+.expo/
+coverage/
