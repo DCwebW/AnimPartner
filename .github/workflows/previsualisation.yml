@@ -1,0 +1,41 @@
+name: Préversion Expo Go
+
+on:
+  pull_request:
+
+# Aucun droit par défaut ; seul le job ci-dessous reçoit pull-requests: write.
+permissions: {}
+
+concurrency:
+  group: previsualisation-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  previsualisation:
+    name: Publier la préversion
+    # Les PR venant d'un fork n'ont pas accès aux secrets.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - run: npm ci
+
+      - uses: expo/expo-github-action/preview@v8
+        with:
+          working-directory: apps/mobile
+          command: eas update --branch pr-${{ github.event.number }} --message pr-${{ github.event.number }}
+          qr-target: expo-go

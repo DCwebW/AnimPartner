@@ -23,6 +23,18 @@
       "output": "single",
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router", "expo-font"]
+    "plugins": ["expo-router", "expo-font", "expo-updates"],
+    "owner": "dcwebw",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/6e4ffded-5c47-45b9-b3c5-51f9705dda40"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6e4ffded-5c47-45b9-b3c5-51f9705dda40"
+      }
+    }
   }
 }
