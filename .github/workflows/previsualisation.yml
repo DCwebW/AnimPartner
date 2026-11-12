@@ -37,5 +37,5 @@ jobs:
       - uses: expo/expo-github-action/preview@v8
         with:
           working-directory: apps/mobile
-          command: eas update --branch pr-${{ github.event.number }}
+          command: eas update --branch pr-${{ github.event.number }} --message pr-${{ github.event.number }}
           qr-target: expo-go
