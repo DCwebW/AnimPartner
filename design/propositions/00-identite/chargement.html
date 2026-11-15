@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>AnimPartner — écran de chargement</title>
+<style>
+  /* Écran de chargement en React, affiché juste après le splash natif.
+     Même fond uni que le splash pour que le passage soit un simple fondu.
+     Ajouter ?theme=sombre à l'adresse pour forcer la version sombre. */
+  :root { --fond: #FEF3D4; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="clair"]) { --fond: #262231; } }
+  :root[data-theme="sombre"] { --fond: #262231; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--fond); }
+  .ecran {
+    width: 390px; height: 844px; margin: 0 auto; background: var(--fond);
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* Logo à 280 px de large, centré, remonté de 24 px (centre optique). */
+  .logo { width: 280px; height: auto; transform: translateY(-24px); }
+</style>
+<script>
+  if (new URLSearchParams(location.search).get('theme') === 'sombre') document.documentElement.dataset.theme = 'sombre';
+  if (new URLSearchParams(location.search).get('theme') === 'clair') document.documentElement.dataset.theme = 'clair';
+</script>
+</head>
+<body>
+  <main class="ecran">
+    <img class="logo" src="app/logo.png" alt="AnimPartner">
+  </main>
+</body>
+</html>
