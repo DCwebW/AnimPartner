@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>AnimPartner — icônes</title>
+<style>
+  body { margin: 0; padding: 24px; font-family: 'Nunito Sans', system-ui, sans-serif; color: #23201E; background: #FFF9F2; }
+  h1 { font-family: Fraunces, Georgia, serif; font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: #6B625B; margin: 24px 0 10px; }
+  p { margin: 0; font-size: 14px; color: #6B625B; }
+  .rang { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
+  figure { margin: 0; text-align: center; font-size: 12px; color: #6B625B; }
+  figcaption { margin-top: 6px; }
+  /* Icône adaptive : fond + premier plan, recadrés par le masque du téléphone. */
+  .adaptive { position: relative; overflow: hidden; }
+  .adaptive img { position: absolute; width: 150%; height: 150%; left: -25%; top: -25%; }
+  .cercle { border-radius: 50%; }
+  .goutte { border-radius: 50% 50% 50% 12%; }
+  .squircle { border-radius: 30%; }
+  .carre { border-radius: 12%; }
+  .theme { background: #2B3A2F; }
+  .theme img.mono { filter: brightness(0) saturate(100%) invert(84%) sepia(18%) saturate(500%) hue-rotate(60deg); }
+  .sombre { background: #262231; padding: 16px; border-radius: 16px; display: inline-flex; gap: 20px; }
+  .zone { position: relative; }
+  .zone::after { content: ""; position: absolute; inset: 0; margin: auto; width: 61.1%; height: 61.1%;
+                 border: 1.5px dashed #C94722; border-radius: 50%; }
+</style>
+</head>
+<body>
+  <h1>Icône AnimPartner</h1>
+  <p>Icône adaptive Android dans les masques courants, monochrome à thème, iOS et favicon.</p>
+
+  <h2>Android — masques</h2>
+  <div class="rang">
+    <figure><div class="adaptive cercle" style="width:96px;height:96px"><img src="app/android-icon-background.png" alt=""><img src="app/android-icon-foreground.png" alt=""></div><figcaption>Cercle</figcaption></figure>
+    <figure><div class="adaptive squircle" style="width:96px;height:96px"><img src="app/android-icon-background.png" alt=""><img src="app/android-icon-foreground.png" alt=""></div><figcaption>Squircle</figcaption></figure>
+    <figure><div class="adaptive goutte" style="width:96px;height:96px"><img src="app/android-icon-background.png" alt=""><img src="app/android-icon-foreground.png" alt=""></div><figcaption>Goutte</figcaption></figure>
+    <figure><div class="adaptive carre" style="width:96px;height:96px"><img src="app/android-icon-background.png" alt=""><img src="app/android-icon-foreground.png" alt=""></div><figcaption>Carré arrondi</figcaption></figure>
+    <figure><div class="adaptive cercle" style="width:48px;height:48px"><img src="app/android-icon-background.png" alt=""><img src="app/android-icon-foreground.png" alt=""></div><figcaption>48 px</figcaption></figure>
+  </div>
+
+  <h2>Zone sûre (cercle de 66 dp sur 108 dp, en pointillés)</h2>
+  <div class="rang">
+    <figure><div class="zone" style="width:160px;height:160px;background:url(app/android-icon-background.png) center/cover"><img src="app/android-icon-foreground.png" alt="" style="width:160px;height:160px"></div><figcaption>Premier plan sur fond</figcaption></figure>
+    <figure><div class="adaptive cercle theme" style="width:96px;height:96px"><img class="mono" src="app/android-icon-monochrome.png" alt=""></div><figcaption>Icône à thème (Android 13+)</figcaption></figure>
+  </div>
+
+  <h2>iOS, favicon, fond sombre</h2>
+  <div class="rang">
+    <figure><img src="app/icon.png" alt="" style="width:96px;height:96px;border-radius:22%"><figcaption>iOS (arrondi par le système)</figcaption></figure>
+    <figure><img src="app/favicon.png" alt="" style="width:48px;height:48px"><figcaption>Favicon 48 px</figcaption></figure>
+    <figure><img src="app/favicon.png" alt="" style="width:16px;height:16px"><figcaption>16 px</figcaption></figure>
+    <div class="sombre">
+      <figure><div class="adaptive squircle" style="width:72px;height:72px"><img src="app/android-icon-background.png" alt=""><img src="app/android-icon-foreground.png" alt=""></div><figcaption style="color:#B3AAB8">Sur fond d'écran sombre</figcaption></figure>
+    </div>
+  </div>
+</body>
+</html>
