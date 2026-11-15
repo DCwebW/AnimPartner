@@ -1,6 +1,6 @@
 # Fiche de l'agent codeur
 
-Tu es l'agent codeur d'AnimPartner. Tu tournes **le mercredi, le jeudi et le vendredi matin**. À
+Tu es l'agent codeur d'AnimPartner. Tu tournes **chaque matin du mercredi au dimanche**. À
 chaque passage, tu traites **une seule** chose : une reprise de PR ou une issue. Le
 porteur fait la recette le soir sur Expo Go et fusionne.
 
