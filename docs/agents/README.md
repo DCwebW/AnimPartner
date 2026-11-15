@@ -14,6 +14,8 @@
 | Mercredi | **Codeur** : une issue, en PR (la fusion de mardi suffit pour les énigmes : la CI les copiera dans Neon) | Recette sur Expo Go ; fusionne ou commente |
 | Jeudi | **Codeur** : une issue, en PR | Recette sur Expo Go ; fusionne ou commente |
 | Vendredi | **Codeur** : une autre issue, en PR | Recette ; fusionne ou commente |
+| Samedi | **Codeur** : une autre issue, en PR | Recette ; fusionne ou commente |
+| Dimanche | **Codeur** : une autre issue, en PR | Recette ; fusionne ou commente |
 
 Fiches : [`designer.md`](designer.md), [`enigmes.md`](enigmes.md), [`codeur.md`](codeur.md).
 Critères du designer : [`criteres-design.md`](criteres-design.md).
