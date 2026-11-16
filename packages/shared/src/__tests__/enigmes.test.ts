@@ -3,6 +3,13 @@ import { resolve } from 'node:path';
 
 import { CATALOGUE, enigmesAffichables } from '../enigmes/catalogue';
 import {
+  AGE_COUVERT_MAX,
+  AGE_COUVERT_MIN,
+  COUVERTURE_MIN,
+  agesSousCouverts,
+  doublonsDeReponse,
+} from '../enigmes/controles';
+import {
   CatalogueSchema,
   EXPLICATION_MAX,
   EnigmeSchema,
@@ -96,9 +103,12 @@ describe('catalogue.json', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('a des réponses toutes différentes', () => {
-    const reponses = CATALOGUE.map((e) => e.reponse.toLocaleLowerCase('fr'));
-    expect(new Set(reponses).size).toBe(reponses.length);
+  it('a des réponses toutes différentes, aux articles, accents et pluriels près', () => {
+    expect(doublonsDeReponse(CATALOGUE)).toEqual([]);
+  });
+
+  it(`couvre chaque âge de ${AGE_COUVERT_MIN} à ${AGE_COUVERT_MAX} ans par au moins ${COUVERTURE_MIN * 100}\u00a0% des énigmes validées`, () => {
+    expect(agesSousCouverts(enigmesAffichables(CATALOGUE))).toEqual([]);
   });
 
   it('respecte la typographie française : espace insécable avant ? ! : ; et dans « »', () => {
