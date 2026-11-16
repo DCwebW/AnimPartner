@@ -3,3 +3,4 @@
 export { CATALOGUE, enigmesAffichables } from './enigmes/catalogue';
 export { creerTirage, melanger, type Aleatoire } from './enigmes/tirage';
 export { CatalogueSchema, EnigmeSchema, QUESTION_MAX, type Enigme } from './enigmes/schema';
+export { CLES_PALETTE, PALETTES, type CleTheme, type Palette } from './themes/palettes';
