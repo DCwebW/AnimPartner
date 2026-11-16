@@ -34,12 +34,28 @@ validé ou généré quoi), sans construire de comptes tant que je suis le seul 
 - **Le dépôt devient la source des énigmes validées.** Elles vivent dans le catalogue du
   dépôt ; Neon n'en est qu'une copie, publiée par la CI à chaque fusion.
 - **La génération passe par une routine Claude Code**, chaque mardi, sur l'abonnement :
-  trois énigmes proposées en PR. Plus de job sur le Worker ni de coût d'API.
+  trois énigmes proposées en PR (volume revu le 16 novembre, voir ci-dessous). Plus de
+  job sur le Worker ni de coût d'API.
 - **La validation se fait par la fusion de la PR**, plus par un écran d'admin. Je retire
   les énigmes refusées avant de fusionner. L'historique Git garde qui a proposé et validé
   quoi.
 - **Pas d'écran d'admin dans le MVP.** Le point de vigilance « admin protégé » ci-dessous
   devient sans objet tant qu'aucune route d'écriture n'est exposée.
+
+### Révision du 16 novembre 2026
+
+- **L'agent des énigmes produit par lots.** À trois énigmes par semaine, il fallait six
+  mois pour atteindre une centaine. Il propose désormais un rattrapage jusqu'à 60 énigmes
+  validées (40 au plus par PR), puis dix par semaine. Il peut en proposer moins s'il n'en
+  trouve pas assez de bonnes : la qualité passe avant le volume.
+- **Le catalogue doit convenir à chaque âge de 3 à 12 ans** : un test exige qu'au moins
+  15 % des énigmes validées couvrent chaque âge. La plage de 3 à 12 ans est une hypothèse
+  de travail, à revoir si le public s'élargit.
+- **Les doublons de réponse sont contrôlés par un test**, sans tenir compte des articles,
+  des accents ni du pluriel. Le dédoublonnage du ressort (même jeu de mots, même
+  paradoxe) reste à la charge de l'agent et de ma relecture.
+- **Le filtrage par âge est prévu** : la logique d'abord (issue #28), le curseur ensuite
+  (issue #29), une fois son design fait.
 
 Les trois agents planifiés (designer, énigmes, codeur) sont décrits dans
 [`docs/agents/`](agents/README.md).
