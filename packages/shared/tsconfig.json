@@ -9,7 +9,8 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": []
+    "types": ["jest", "node"],
+    "resolveJsonModule": true
   },
   "include": ["src"]
 }
