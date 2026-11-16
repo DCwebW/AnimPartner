@@ -60,7 +60,7 @@ Espaces de travail npm, Node 22 (`.nvmrc`). Sauf mention contraire, à lancer à
 | `npm run typecheck` | `tsc --noEmit` dans chaque espace de travail (`apps/mobile`, `packages/shared`) |
 | `npm run lint` | ESLint (`expo lint` dans `apps/mobile`), puis `prettier --check .` |
 | `npm run format` | `prettier --write .` |
-| `npm test` | Jest (`jest-expo`, React Native Testing Library) dans chaque espace de travail |
+| `npm test` | Jest dans chaque espace de travail : `jest-expo` et React Native Testing Library dans `apps/mobile`, Jest avec Babel (TypeScript) dans `packages/shared` |
 | `npm run web:export` | `expo export --platform web` dans `apps/mobile`, sortie dans `apps/mobile/dist` |
 | `cd apps/mobile && npx expo start` | Serveur de développement, QR code pour Expo Go |
 | `cd apps/mobile && npx expo install <paquet>` | Ajoute une dépendance à la version compatible avec le SDK |
@@ -72,6 +72,11 @@ Espaces de travail npm, Node 22 (`.nvmrc`). Sauf mention contraire, à lancer à
   `EXPO_OFFLINE=1`. Les versions viennent alors du `bundledNativeModules.json` du paquet
   `expo` installé, qui est la référence du SDK.
 - Prettier ignore `design/`, `docs/` et les fichiers Markdown.
+- **Catalogue des énigmes** : `packages/shared/src/enigmes/catalogue.json`, une liste
+  d'objets validée en entier par le schéma Zod `EnigmeSchema`
+  (`packages/shared/src/enigmes/schema.ts`) dans les tests. Les espaces insécables s'y
+  écrivent `\u00a0` (avant `? ! : ;` et à l'intérieur des « »). Les tests de
+  `packages/shared` vivent dans `packages/shared/src/__tests__/`.
 
 ## Comment on travaille : des agents, une issue à la fois
 
