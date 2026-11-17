@@ -132,7 +132,7 @@ describe('catalogue.json', () => {
   it('garde les quatre énigmes des maquettes, saisies par le porteur', () => {
     const reponses = CATALOGUE.map((e) => e.reponse);
     expect(reponses).toEqual(
-      expect.arrayContaining(['La rivière', 'Le noir', 'Le flocon de neige', "La feuille d'arbre"]),
+      expect.arrayContaining(['La rivière', 'Le noir', 'La neige', "La feuille d'arbre"]),
     );
     const initiales = CATALOGUE.filter((e) => e.source === 'manuelle');
     for (const e of initiales) {
