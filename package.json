@@ -12,10 +12,12 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present && prettier --check .",
     "format": "prettier --write .",
-    "test": "npm run test --workspaces --if-present",
-    "web:export": "npm run web:export --workspace @animpartner/mobile"
+    "test": "npm run test --workspaces --if-present && node --test \"scripts/__tests__/*.test.mjs\"",
+    "web:export": "npm run web:export --workspace @animpartner/mobile",
+    "capture": "node scripts/capture.mjs"
   },
   "devDependencies": {
+    "playwright": "^1.63.0",
     "prettier": "3.10.0"
   }
 }

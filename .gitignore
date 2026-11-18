@@ -29,3 +29,4 @@ desktop.ini
 # Journaux
 *.log
 npm-debug.log*
+captures/

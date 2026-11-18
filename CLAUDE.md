@@ -61,6 +61,7 @@ Espaces de travail npm, Node 22 (`.nvmrc`). Sauf mention contraire, à lancer à
 | `npm run lint` | ESLint (`expo lint` dans `apps/mobile`), puis `prettier --check .` |
 | `npm run format` | `prettier --write .` |
 | `npm test` | Jest dans chaque espace de travail : `jest-expo` et React Native Testing Library dans `apps/mobile`, Jest avec Babel (TypeScript) dans `packages/shared` |
+| `npm run capture -- <route>` | Capture PNG 390 × 844 d'une route (ou `--maquette <Fichier.dc.html>`) dans `captures/` |
 | `npm run web:export` | `expo export --platform web` dans `apps/mobile`, sortie dans `apps/mobile/dist` |
 | `cd apps/mobile && npx expo start` | Serveur de développement, QR code pour Expo Go |
 | `cd apps/mobile && npx expo install <paquet>` | Ajoute une dépendance à la version compatible avec le SDK |
@@ -93,7 +94,11 @@ du projet écrit les issues, fait la recette sur son téléphone et fusionne.
 4. **Tests d'abord** : écrire les tests à partir des critères d'acceptation, vérifier
    qu'ils échouent, puis coder jusqu'à ce qu'ils passent.
 5. **Vérifier avant d'ouvrir la PR** : `typecheck`, `lint`, `test` et `web:export` passent.
-   Pour une tâche d'interface, capture Expo Web en 390 × 844 comparée à la maquette.
+   Pour une tâche d'interface, capture Expo Web en 390 × 844 comparée à la maquette :
+   `npm run capture -- <route> [fichier]` exporte l'app, la sert en local et enregistre
+   un PNG (par défaut dans `captures/`, ignoré par git) ; `npm run capture -- --maquette
+   <Fichier.dc.html> [fichier]` capture la maquette à la même taille. Première fois : `npx playwright install chromium`
+   (déjà présent dans le cloud).
 6. **Relecture** par un sous-agent relecteur : conformité à la spec, au design system,
    aux règles ci-dessous. Deux ou trois allers-retours au plus ; au-delà, ouvrir la PR en
    écrivant les réserves.
