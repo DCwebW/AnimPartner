@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, statSync } from 'node:fs';
+import { mkdtempSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
@@ -23,10 +23,19 @@ test('arguments invalides rejetés', () => {
   assert.throws(() => parseArgs(['--x']));
 });
 
-test('la commande produit une image non vide pour la route d’accueil', { timeout: 300000 }, (t) => {
-  if (!existsSync(join(process.cwd(), 'node_modules', 'playwright')))
-    return t.skip('playwright absent');
-  const sortie = join(mkdtempSync(join(tmpdir(), 'cap-')), 'accueil.png');
-  execFileSync('node', ['scripts/capture.mjs', '/', sortie], { stdio: 'pipe' });
-  assert.ok(statSync(sortie).size > 1000);
-});
+test(
+  'la commande produit une image non vide pour la route d’accueil',
+  { timeout: 300000 },
+  async (t) => {
+    let chromiumDispo = false;
+    try {
+      const { chromium } = await import('playwright');
+      await (await chromium.launch()).close();
+      chromiumDispo = true;
+    } catch {}
+    if (!chromiumDispo) return t.skip('Chromium absent (npx playwright install chromium)');
+    const sortie = join(mkdtempSync(join(tmpdir(), 'cap-')), 'accueil.png');
+    execFileSync('node', ['scripts/capture.mjs', '/', sortie], { stdio: 'pipe' });
+    assert.ok(statSync(sortie).size > 1000);
+  },
+);
