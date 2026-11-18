@@ -97,7 +97,8 @@ du projet écrit les issues, fait la recette sur son téléphone et fusionne.
    Pour une tâche d'interface, capture Expo Web en 390 × 844 comparée à la maquette :
    `npm run capture -- <route> [fichier]` exporte l'app, la sert en local et enregistre
    un PNG (par défaut dans `captures/`, ignoré par git) ; `npm run capture -- --maquette
-   <Fichier.dc.html> [fichier]` capture la maquette à la même taille.
+   <Fichier.dc.html> [fichier]` capture la maquette à la même taille. Première fois : `npx playwright install chromium`
+   (déjà présent dans le cloud).
 6. **Relecture** par un sous-agent relecteur : conformité à la spec, au design system,
    aux règles ci-dessous. Deux ou trois allers-retours au plus ; au-delà, ouvrir la PR en
    écrivant les réserves.
