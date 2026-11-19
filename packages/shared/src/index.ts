@@ -5,3 +5,4 @@ export { creerTirage, melanger, type Aleatoire } from './enigmes/tirage';
 export { CatalogueSchema, EnigmeSchema, QUESTION_MAX, type Enigme } from './enigmes/schema';
 export { CLES_PALETTE, PALETTES, type CleTheme, type Palette } from './themes/palettes';
 export { formaterDateDuJour, formaterTrancheAge } from './formatage/date';
+export { salutationDuMoment, themeDuMoment } from './themes/themeDuMoment';
