@@ -124,8 +124,6 @@ export function BandeauNuit({ largeur }: Props) {
         strokeLinecap="round"
         strokeOpacity={0.7}
       />
-      <G transform="translate(236 6)" />
-      <G transform="translate(150 8)" />
       <Circle cx={318} cy={42} r={32} fill="#2C3158" fillOpacity={0.75} />
       <Circle cx={318} cy={42} r={20} fill="#F3E7C4" />
       <G clipPath={`url(#${p}-zone-lune)`}>
