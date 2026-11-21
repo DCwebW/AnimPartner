@@ -66,6 +66,27 @@ describe('thème du moment', () => {
   });
 });
 
+describe('couleurs par thème', () => {
+  it.each([
+    ['beauTemps', new Date(2026, 3, 15, 14)],
+    ['nuit', new Date(2026, 3, 15, 22)],
+    ['hiver', new Date(2026, 0, 10, 12)],
+    ['automne', new Date(2026, 9, 10, 12)],
+  ] as const)('%s : le titre prend l’encre de la palette', async (cle, date) => {
+    await render(<EcranDuMoment maintenant={() => date} />);
+    expect(screen.getByRole('header')).toHaveStyle({ color: PALETTES[cle].encre });
+  });
+
+  it('met la date à jour au retour au premier plan', async () => {
+    let jour = 15;
+    await render(<EcranDuMoment maintenant={() => new Date(2026, 3, jour, 14)} />);
+    expect(screen.getByText('Mercredi 15 avril')).toBeOnTheScreen();
+    jour = 16;
+    await act(async () => ecouteur?.('active'));
+    expect(screen.getByText('Jeudi 16 avril')).toBeOnTheScreen();
+  });
+});
+
 describe('table des thèmes', () => {
   it('associe une palette et un bandeau à chaque thème', () => {
     for (const cle of ['beauTemps', 'nuit', 'hiver', 'automne'] as const) {
