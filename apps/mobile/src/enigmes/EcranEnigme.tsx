@@ -58,7 +58,8 @@ export function EcranEnigme({
   });
   const [enigme, setEnigme] = useState(premiere);
   const [face, setFace] = useState<Face>('recto');
-  const [date] = useState(() => formaterDateDuJour(maintenant ?? new Date()));
+  // Recalculée à chaque rendu : EcranDuMoment la rafraîchit au retour au premier plan.
+  const date = formaterDateDuJour(maintenant ?? new Date());
   const [zone, setZone] = useState({ largeur: 0, hauteur: 0 });
 
   const autreEnigme = () => {

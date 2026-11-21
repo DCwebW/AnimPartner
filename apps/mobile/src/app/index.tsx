@@ -1,13 +1,6 @@
-import { PALETTES } from '@animpartner/shared';
-import { useWindowDimensions } from 'react-native';
+import { EcranDuMoment } from '@/enigmes/EcranDuMoment';
 
-import { BandeauVent } from '@/bandeaux/BandeauVent';
-import { EcranEnigme } from '@/enigmes/EcranEnigme';
-
-// Écran d'accueil : l'énigme du moment, en thème beau temps. Le thème suivra le moment
-// de la journée et la saison avec l'issue #12.
+// Écran d'accueil : l'énigme du moment, dans le thème de l'heure et de la saison.
 export default function Accueil() {
-  const { width } = useWindowDimensions();
-
-  return <EcranEnigme palette={PALETTES.beauTemps} bandeau={<BandeauVent largeur={width} />} />;
+  return <EcranDuMoment />;
 }
