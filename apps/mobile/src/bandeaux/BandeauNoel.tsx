@@ -30,7 +30,7 @@ type Props = {
 };
 
 // ease-in-out CSS de la planche : cubic-bezier(.42, 0, .58, 1).
-const ease = Easing.bezier(0.42, 0, 0.58, 1);
+const ease = Easing.bezier(0.42, 0, 0.58, 1).factory();
 
 function Sapin({ x, y, echelle }: { x: number; y: number; echelle: number }) {
   const trait = 1.5 / echelle; // vector-effect: non-scaling-stroke sur la planche
