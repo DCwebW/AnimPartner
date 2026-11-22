@@ -4,10 +4,10 @@
 // suivants (design/propositions/<N°>-<thème>/palette.json) s'ajoutent telles quelles.
 // Fichier généré une fois depuis THEMES ; les valeurs se corrigent dans le design.
 
-export type CleTheme = 'beauTemps' | 'nuit' | 'hiver' | 'automne';
+export type CleTheme = 'beauTemps' | 'nuit' | 'hiver' | 'automne' | 'noel';
 
 export type Palette = {
-  key: 'Vent' | 'Nuit' | 'Hiver' | 'Automne';
+  key: 'Vent' | 'Nuit' | 'Hiver' | 'Automne' | 'Noel';
   engrenage_fond: string;
   engrenage_bord: string;
   fond_scene: string;
@@ -212,6 +212,47 @@ export const PALETTES: Record<CleTheme, Palette> = {
     bord_bouton: 'rgba(74, 63, 54, 0.4)',
     ombre_bouton: 'rgba(74, 63, 54, 0.18)',
     lien: '#9E3A18',
+  },
+  noel: {
+    key: 'Noel',
+    engrenage_fond: '#FFFFFF',
+    engrenage_bord: 'rgba(74, 63, 54, 0.4)',
+    fond_scene: '#F7E3D0',
+    salut: 'Bonjour',
+    icone: 'neige',
+    icone_c: '#1F6B45',
+    feuille: '#FDF1E3',
+    hach1: '#C8503C',
+    op1: 0.1,
+    hach2: '#1F6B45',
+    op2: 0.07,
+    ombre: 'rgba(35, 32, 30, 0.18)',
+    encre: '#23201E',
+    encre2: '#6B4F47',
+    poignee: 'rgba(74, 63, 54, 0.3)',
+    trait: '#4A3F36',
+    trait_op: 0.55,
+    ficelle: '#B0302A',
+    oeillet: '#C9A227',
+    recto: '#FFFFFF',
+    recto_hach: '#E2B79C',
+    recto_hach_op: 0.2,
+    recto_tirets: '#B0302A',
+    recto_accent: '#B0302A',
+    puce_fond: '#FBE0DA',
+    puce_texte: '#8E2420',
+    verso: '#1F6B45',
+    verso_hach: '#164E33',
+    verso_hach_op: 0.4,
+    verso_tirets: '#FFFFFF',
+    verso_texte: '#FFFFFF',
+    verso_kicker: '#F6E3A8',
+    verso_expl: '#EAF5EE',
+    bouton: '#B0302A',
+    bouton_texte: '#FFFFFF',
+    bord_bouton: 'rgba(74, 63, 54, 0.4)',
+    ombre_bouton: 'rgba(74, 63, 54, 0.18)',
+    lien: '#8E2420',
   },
 };
 

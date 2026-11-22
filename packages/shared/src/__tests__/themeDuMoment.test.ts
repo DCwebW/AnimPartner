@@ -10,9 +10,10 @@ describe('themeDuMoment', () => {
     expect(themeDuMoment(d(5, 10, 7, 0))).toBe('beauTemps');
   });
 
-  it('passe de l’automne à l’hiver le 1er décembre', () => {
+  it('passe de l’automne à Noël le 1er décembre, puis à l’hiver le 27', () => {
     expect(themeDuMoment(d(11, 30))).toBe('automne');
-    expect(themeDuMoment(d(12, 1))).toBe('hiver');
+    expect(themeDuMoment(d(12, 1))).toBe('noel');
+    expect(themeDuMoment(d(12, 27))).toBe('hiver');
   });
 
   it('passe de l’hiver au beau temps le 1er mars', () => {
@@ -29,6 +30,26 @@ describe('themeDuMoment', () => {
   it('donne la nuit en été, prioritaire sur la saison', () => {
     expect(themeDuMoment(d(7, 14, 23, 0))).toBe('nuit');
     expect(themeDuMoment(d(12, 15, 22, 0))).toBe('nuit');
+  });
+});
+
+describe('Noël', () => {
+  it('s’affiche du 1er au 26 décembre en journée', () => {
+    expect(themeDuMoment(d(11, 30))).toBe('automne');
+    expect(themeDuMoment(d(12, 1))).toBe('noel');
+    expect(themeDuMoment(d(12, 26))).toBe('noel');
+    expect(themeDuMoment(d(12, 27))).toBe('hiver');
+  });
+
+  it('cède à la nuit : la nuit du 15 décembre garde son bandeau', () => {
+    expect(themeDuMoment(d(12, 15, 22, 0))).toBe('nuit');
+    expect(themeDuMoment(d(12, 15, 6, 59))).toBe('nuit');
+    expect(themeDuMoment(d(12, 15, 7, 0))).toBe('noel');
+  });
+
+  it('ne change pas la salutation : « Bonjour » le jour, « Bonsoir » la nuit', () => {
+    expect(salutationDuMoment(d(12, 15, 12))).toBe('Bonjour');
+    expect(salutationDuMoment(d(12, 15, 22))).toBe('Bonsoir');
   });
 });
 
