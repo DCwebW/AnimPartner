@@ -72,6 +72,7 @@ describe('couleurs par thème', () => {
     ['nuit', new Date(2026, 3, 15, 22)],
     ['hiver', new Date(2026, 0, 10, 12)],
     ['automne', new Date(2026, 9, 10, 12)],
+    ['noel', new Date(2026, 11, 15, 12)],
   ] as const)('%s : le titre prend l’encre de la palette', async (cle, date) => {
     await render(<EcranDuMoment maintenant={() => date} />);
     expect(screen.getByRole('header')).toHaveStyle({ color: PALETTES[cle].encre });
@@ -89,7 +90,7 @@ describe('couleurs par thème', () => {
 
 describe('table des thèmes', () => {
   it('associe une palette et un bandeau à chaque thème', () => {
-    for (const cle of ['beauTemps', 'nuit', 'hiver', 'automne'] as const) {
+    for (const cle of ['beauTemps', 'nuit', 'hiver', 'automne', 'noel'] as const) {
       expect(paletteDe(cle)).toBe(PALETTES[cle]);
       expect(bandeauDe(cle, 390)).toBeTruthy();
     }

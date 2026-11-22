@@ -1,10 +1,13 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { CLES_PALETTE, PALETTES, type CleTheme } from '../themes/palettes';
 
-const THEMES: CleTheme[] = ['beauTemps', 'nuit', 'hiver', 'automne'];
+const THEMES: CleTheme[] = ['beauTemps', 'nuit', 'hiver', 'automne', 'noel'];
 const COULEUR = /^(#[0-9A-F]{6}|rgba\(\d{1,3}, \d{1,3}, \d{1,3}, (0|1|0?\.\d+)\))$/;
 
 describe('palettes', () => {
-  it('couvre les quatre thèmes du MVP', () => {
+  it('couvre les quatre thèmes du MVP et Noël', () => {
     expect(Object.keys(PALETTES).sort()).toEqual([...THEMES].sort());
   });
 
@@ -24,6 +27,14 @@ describe('palettes', () => {
         });
       }
     }
+  });
+
+  it('reprend palette.json de la proposition 01-noel', () => {
+    const json = JSON.parse(
+      readFileSync(join(__dirname, '../../../../design/propositions/01-noel/palette.json'), 'utf8'),
+    );
+    for (const cle of CLES_PALETTE)
+      expect({ cle, v: PALETTES.noel[cle] }).toEqual({ cle, v: json[cle] });
   });
 
   it('reprend les valeurs clés du thème beau temps', () => {
