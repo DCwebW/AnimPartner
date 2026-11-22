@@ -9,8 +9,14 @@ le construit, comment on travaille et ce qu'on ne fait jamais.
 - **MVP en cours : un fournisseur d'énigmes et devinettes.** Un seul écran : une étiquette
   porte une énigme, se retourne pour montrer la réponse, et glisse pour laisser place à la
   suivante. Bibliothèque de jeux, planning et groupes viendront après.
-- Le design des écrans du MVP est terminé. Le squelette est posé (issue #1) : monorepo,
-  application Expo avec un écran d'accueil vide titré « AnimPartner ».
+- Le design des écrans du MVP est terminé. **Déjà sur `main`** : le socle (monorepo, CI,
+  préversion Expo Go par PR, capture Expo Web), le catalogue d'énigmes et son tirage sans
+  répétition, le choix du thème selon le moment (logique seule), les quatre palettes et
+  les quatre bandeaux statiques, l'écran d'énigme sans animation (en beau temps), le logo
+  et l'écran de lancement.
+- **Restent pour le MVP** : retournement et glissement de l'étiquette, thème du moment
+  appliqué à l'écran, prénom, thème de Noël, filtre par âge. Les issues ouvertes sur
+  GitHub font foi pour la suite, pas cette liste.
 - Utilisateur unique pour l'instant (le porteur du projet), ouverture progressive à
   d'autres animateurs ensuite. Le schéma doit savoir qui a créé, généré ou validé quoi,
   sans construire de comptes.
@@ -73,6 +79,9 @@ Espaces de travail npm, Node 22 (`.nvmrc`). Sauf mention contraire, à lancer à
   `EXPO_OFFLINE=1`. Les versions viennent alors du `bundledNativeModules.json` du paquet
   `expo` installé, qui est la référence du SDK.
 - Prettier ignore `design/`, `docs/` et les fichiers Markdown.
+- **GitHub depuis le cloud** : GraphQL y est bloqué, donc `gh issue view`, `gh pr view`
+  et consorts échouent. Passer par le connecteur GitHub ou par `gh api` en REST
+  (`gh api repos/DCwebW/AnimPartner/issues/<n>`, `…/issues/<n>/comments`).
 - **Catalogue des énigmes** : `packages/shared/src/enigmes/catalogue.json`, une liste
   d'objets validée en entier par le schéma Zod `EnigmeSchema`
   (`packages/shared/src/enigmes/schema.ts`) dans les tests. Les espaces insécables s'y
@@ -148,6 +157,23 @@ propre idée de l'interface.
   (`VentBeauTemps`, `NuitAnimee`, `HiverNeige`, `AutomneLac`).
 - Reprendre les valeurs (couleurs, tailles, rayons, espacements, libellés) depuis les
   maquettes. Un écart volontaire se justifie dans la PR.
+- **Tout suit le design déjà en place.** Chaque nouvel écran, composant ou demande de
+  design du porteur, avec ou sans maquette, prolonge l'existant au lieu d'inventer :
+  - les règles de [`design/design-system.md`](design/design-system.md) : couleurs,
+    typographie, rythme, règles d'interface, crayonné léger ;
+  - les couleurs de la `Palette` du thème courant
+    (`packages/shared/src/themes/palettes.ts`), jamais une couleur codée en dur sans
+    raison écrite dans la PR ;
+  - les éléments déjà construits : l'étiquette (`apps/mobile/src/enigmes/Etiquette.tsx`),
+    le papier hachuré, les boutons principal et secondaire et l'en-tête de
+    `EcranEnigme.tsx`, les icônes de `icones.tsx`, les polices de `src/theme/`. Les
+    réutiliser, ou les extraire en composants partagés, plutôt que d'en refaire une
+    variante.
+  - Sans maquette, composer avec ces éléments et ces règles, puis le dire dans la PR. Un
+    besoin que l'existant ne couvre pas (nouveau style, nouvelle clé de palette, nouveau
+    type de composant) se signale dans l'issue au lieu d'être tranché par l'agent.
+  - Un thème du designer change le bandeau et les valeurs de la palette, avec les mêmes
+    clés. Il ne change ni la structure des écrans ni les composants.
 - Les textes des maquettes (« Camille », les dates, les énigmes) sont du **contenu
   d'exemple**, pas des données.
 - **Ne jamais modifier `design/`.** Le flux va du canevas en ligne vers le dépôt, pas
