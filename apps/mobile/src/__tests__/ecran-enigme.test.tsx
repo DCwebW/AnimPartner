@@ -1,7 +1,17 @@
 import { PALETTES, type Enigme } from '@animpartner/shared';
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { AccessibilityInfo } from 'react-native';
+import { ReduceMotion, ReducedMotionConfig } from 'react-native-reanimated';
 
 import { EcranEnigme } from '@/enigmes/EcranEnigme';
+import { DUREE_FONDU_REDUIT_MS, DUREE_RETOURNEMENT_MS } from '@/enigmes/retournement';
+
+let mockAnimationsReduites = false;
+jest.mock('react-native-reanimated', () => ({
+  __esModule: true,
+  ...jest.requireActual('react-native-reanimated'),
+  useReducedMotion: () => mockAnimationsReduites,
+}));
 
 const base = {
   explication: 'Une explication.',
@@ -36,6 +46,32 @@ const rendre = () =>
 const questionAffichee = () =>
   enigmes.find((e) => screen.queryByText(e.question) !== null)?.question;
 
+const enigmeAffichee = () => enigmes.find((e) => e.question === questionAffichee())!;
+
+const avancer = async (ms: number) => {
+  await act(async () => {
+    jest.advanceTimersByTime(ms);
+  });
+};
+
+/** Appuie sur un bouton puis laisse le retournement aller à son terme. */
+const appuyer = async (libelle: string) => {
+  await fireEvent.press(screen.getByRole('button', { name: libelle }));
+  await avancer(DUREE_RETOURNEMENT_MS + 50);
+};
+
+beforeEach(() => {
+  jest.useFakeTimers();
+  // Déjà un mock dans la configuration Jest de React Native : on oublie ses appels.
+  jest.clearAllMocks();
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+  jest.restoreAllMocks();
+  mockAnimationsReduites = false;
+});
+
 describe("écran d'énigme", () => {
   it('salue, donne la date du jour en français et montre une énigme au recto', async () => {
     await rendre();
@@ -59,7 +95,7 @@ describe("écran d'énigme", () => {
     const question = questionAffichee();
     const enigme = enigmes.find((e) => e.question === question)!;
 
-    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await appuyer('Voir la réponse');
 
     expect(screen.getByText('Réponse')).toBeOnTheScreen();
     expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
@@ -74,8 +110,8 @@ describe("écran d'énigme", () => {
     await rendre();
     const question = questionAffichee();
 
-    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
-    await fireEvent.press(screen.getByRole('button', { name: "Revoir l'énigme" }));
+    await appuyer('Voir la réponse');
+    await appuyer("Revoir l'énigme");
 
     expect(screen.getByText(question!)).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
@@ -85,7 +121,7 @@ describe("écran d'énigme", () => {
     await rendre();
     const premiere = questionAffichee();
 
-    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await appuyer('Une autre énigme');
 
     const seconde = questionAffichee();
     expect(seconde).toBeDefined();
@@ -97,8 +133,8 @@ describe("écran d'énigme", () => {
     await rendre();
     const premiere = questionAffichee();
 
-    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
-    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await appuyer('Voir la réponse');
+    await appuyer('Une autre énigme');
 
     expect(screen.getByText('Énigme')).toBeOnTheScreen();
     expect(questionAffichee()).not.toBe(premiere);
@@ -108,9 +144,130 @@ describe("écran d'énigme", () => {
     await rendre();
     const vues = [questionAffichee()];
     for (let i = 1; i < enigmes.length; i++) {
-      await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+      await appuyer('Une autre énigme');
       vues.push(questionAffichee());
     }
     expect(new Set(vues).size).toBe(enigmes.length);
+  });
+});
+
+describe("retournement de l'étiquette", () => {
+  it('garde les boutons du recto tant que l’étiquette tourne', async () => {
+    await rendre();
+    const enigme = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(DUREE_RETOURNEMENT_MS / 2);
+
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: "Revoir l'énigme" })).not.toBeOnTheScreen();
+    expect(screen.queryByText(enigme.reponse)).not.toBeOnTheScreen();
+
+    await avancer(DUREE_RETOURNEMENT_MS / 2 + 50);
+
+    expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: "Revoir l'énigme" })).toBeOnTheScreen();
+    expect(screen.queryByText(enigme.question)).not.toBeOnTheScreen();
+  });
+
+  it('ignore un appui pendant le retournement', async () => {
+    await rendre();
+    const enigme = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(100);
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(DUREE_RETOURNEMENT_MS);
+
+    // Toujours la même énigme, au verso, et un seul retournement.
+    expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: "Revoir l'énigme" })).toBeOnTheScreen();
+    await avancer(DUREE_RETOURNEMENT_MS);
+    expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
+  });
+
+  it('ignore un appui pendant le retour au recto', async () => {
+    await rendre();
+    const enigme = enigmeAffichee();
+    await appuyer('Voir la réponse');
+
+    await fireEvent.press(screen.getByRole('button', { name: "Revoir l'énigme" }));
+    await avancer(100);
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await avancer(DUREE_RETOURNEMENT_MS);
+
+    expect(screen.getByText(enigme.question)).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+  });
+
+  it('annonce la réponse au lecteur d’écran une fois l’étiquette retournée', async () => {
+    const annonce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    await rendre();
+    const enigme = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(DUREE_RETOURNEMENT_MS / 2);
+    expect(annonce).not.toHaveBeenCalled();
+
+    await avancer(DUREE_RETOURNEMENT_MS / 2 + 50);
+    expect(annonce).toHaveBeenCalledTimes(1);
+    expect(annonce).toHaveBeenCalledWith(`Réponse\u00a0: ${enigme.reponse}. ${enigme.explication}`);
+  });
+
+  it('n’annonce rien au retour vers le recto', async () => {
+    const annonce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    await rendre();
+    await appuyer('Voir la réponse');
+    annonce.mockClear();
+
+    await appuyer("Revoir l'énigme");
+
+    expect(annonce).not.toHaveBeenCalled();
+  });
+
+  it('garde un vrai fondu quand Reanimated réduit aussi les animations', async () => {
+    // Le système réduit les animations : Reanimated sauterait à la fin de chaque
+    // animation, et le fondu deviendrait un changement instantané.
+    mockAnimationsReduites = true;
+    await render(
+      <>
+        <ReducedMotionConfig mode={ReduceMotion.Always} />
+        <EcranEnigme
+          enigmes={enigmes}
+          aleatoire={aleatoire}
+          maintenant={new Date(2026, 3, 15, 10)}
+          palette={PALETTES.beauTemps}
+          bandeau={null}
+        />
+      </>,
+    );
+    const enigme = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(DUREE_FONDU_REDUIT_MS / 2);
+
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+    expect(screen.queryByText(enigme.reponse)).not.toBeOnTheScreen();
+
+    await avancer(DUREE_FONDU_REDUIT_MS / 2 + 50);
+    expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
+  });
+
+  it('se contente d’un fondu court quand les animations sont réduites', async () => {
+    mockAnimationsReduites = true;
+    await rendre();
+    const enigme = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(DUREE_FONDU_REDUIT_MS + 50);
+
+    expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: "Revoir l'énigme" })).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByRole('button', { name: "Revoir l'énigme" }));
+    await avancer(DUREE_FONDU_REDUIT_MS + 50);
+
+    expect(screen.getByText(enigme.question)).toBeOnTheScreen();
   });
 });
