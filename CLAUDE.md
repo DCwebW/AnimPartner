@@ -9,14 +9,20 @@ le construit, comment on travaille et ce qu'on ne fait jamais.
 - **MVP en cours : un fournisseur d'énigmes et devinettes.** Un seul écran : une étiquette
   porte une énigme, se retourne pour montrer la réponse, et glisse pour laisser place à la
   suivante. Bibliothèque de jeux, planning et groupes viendront après.
-- Le design des écrans du MVP est terminé. **Déjà sur `main`** : le socle (monorepo, CI,
-  préversion Expo Go par PR, capture Expo Web), le catalogue d'énigmes et son tirage sans
-  répétition, le choix du thème selon le moment (logique seule), les quatre palettes et
-  les quatre bandeaux statiques, l'écran d'énigme sans animation (en beau temps), le logo
-  et l'écran de lancement.
-- **Restent pour le MVP** : retournement et glissement de l'étiquette, thème du moment
-  appliqué à l'écran, prénom, thème de Noël, filtre par âge. Les issues ouvertes sur
-  GitHub font foi pour la suite, pas cette liste.
+- Le design des écrans du MVP est terminé, filtre par âge compris (maquettes
+  `MvpVentFiltreAge` et `MvpNuitFiltreAge`). **Déjà sur `main`** : le socle (monorepo,
+  CI, préversion Expo Go par PR, capture Expo Web), le catalogue d'énigmes et son tirage
+  sans répétition, les quatre palettes et les quatre bandeaux statiques, l'écran d'énigme
+  sans animation, le thème du moment appliqué à l'écran, le thème de Noël (palette,
+  bandeau animé, du 1er au 26 décembre), le logo et l'écran de lancement. Le design du
+  thème du Jour de l'an est validé (`design/propositions/02-jour-de-l-an/`).
+- **Restent pour le MVP**, par ordre de priorité : retournement puis glissement de
+  l'étiquette, filtre par âge (logique puis feuille de filtres), prénom. Puis les
+  finitions : thème du Jour de l'an, **à fusionner avant le 27 décembre**, et animation
+  des quatre bandeaux. Les issues ouvertes sur GitHub font foi pour la suite, pas cette
+  liste.
+- **Catalogue** : 20 énigmes validées au 23 novembre 2026. L'agent Énigmes fait le
+  rattrapage jusqu'à 60, puis dix par semaine.
 - Utilisateur unique pour l'instant (le porteur du projet), ouverture progressive à
   d'autres animateurs ensuite. Le schéma doit savoir qui a créé, généré ou validé quoi,
   sans construire de comptes.
