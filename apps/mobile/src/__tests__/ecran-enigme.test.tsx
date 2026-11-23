@@ -4,6 +4,7 @@ import { AccessibilityInfo } from 'react-native';
 import { ReduceMotion, ReducedMotionConfig } from 'react-native-reanimated';
 
 import { EcranEnigme } from '@/enigmes/EcranEnigme';
+import { DUREE_FONDU_ENCHAINE_MS, DUREE_GLISSEMENT_MS } from '@/enigmes/glissement';
 import { DUREE_FONDU_REDUIT_MS, DUREE_RETOURNEMENT_MS } from '@/enigmes/retournement';
 
 let mockAnimationsReduites = false;
@@ -269,5 +270,79 @@ describe("retournement de l'étiquette", () => {
     await avancer(DUREE_FONDU_REDUIT_MS + 50);
 
     expect(screen.getByText(enigme.question)).toBeOnTheScreen();
+  });
+});
+
+describe("glissement vers l'énigme suivante", () => {
+  it('fait sortir l’étiquette du verso telle quelle, sans la retourner', async () => {
+    await rendre();
+    const premiere = enigmeAffichee();
+    await appuyer('Voir la réponse');
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await avancer(DUREE_GLISSEMENT_MS / 2);
+
+    // L'étiquette sortante est masquée au lecteur d'écran, mais toujours dessinée au verso.
+    expect(screen.getByText(premiere.reponse, { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.queryByText(premiere.question, { includeHiddenElements: true })).toBeNull();
+
+    await avancer(DUREE_GLISSEMENT_MS / 2 + 50);
+
+    expect(screen.queryByText(premiere.reponse, { includeHiddenElements: true })).toBeNull();
+    expect(screen.getByText('Énigme')).toBeOnTheScreen();
+    expect(questionAffichee()).not.toBe(premiere.question);
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+  });
+
+  it('fait entrer la nouvelle énigme au recto pendant que l’ancienne sort', async () => {
+    await rendre();
+    const premiere = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await avancer(DUREE_GLISSEMENT_MS / 2);
+
+    // Les deux étiquettes sont dessinées ; seule la nouvelle est lisible.
+    expect(screen.getByText(premiere.question, { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.queryByText(premiere.question)).not.toBeOnTheScreen();
+    expect(questionAffichee()).toBeDefined();
+
+    await avancer(DUREE_GLISSEMENT_MS / 2 + 50);
+
+    expect(screen.queryByText(premiere.question, { includeHiddenElements: true })).toBeNull();
+  });
+
+  it('ignore un appui pendant le glissement', async () => {
+    const attendue = await (async () => {
+      const rendu = await rendre();
+      await appuyer('Une autre énigme');
+      const question = questionAffichee();
+      await rendu.unmount();
+      return question;
+    })();
+
+    await rendre();
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await avancer(100);
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(DUREE_GLISSEMENT_MS + DUREE_RETOURNEMENT_MS);
+
+    // Une seule nouvelle énigme tirée, toujours au recto.
+    expect(questionAffichee()).toBe(attendue);
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+  });
+
+  it('se contente d’un fondu enchaîné quand les animations sont réduites', async () => {
+    mockAnimationsReduites = true;
+    await rendre();
+    const premiere = enigmeAffichee();
+    await appuyer('Voir la réponse');
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await avancer(DUREE_FONDU_ENCHAINE_MS + 50);
+
+    expect(screen.queryByText(premiere.reponse, { includeHiddenElements: true })).toBeNull();
+    expect(screen.getByText('Énigme')).toBeOnTheScreen();
+    expect(questionAffichee()).not.toBe(premiere.question);
   });
 });
