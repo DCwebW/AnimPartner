@@ -7,32 +7,43 @@ import {
   type Enigme,
   type Palette,
 } from '@animpartner/shared';
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import {
   AccessibilityInfo,
   Pressable,
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
   type LayoutChangeEvent,
   type PressableProps,
 } from 'react-native';
-import Animated, { useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, Path, Pattern, Rect } from 'react-native-svg';
 
 import { useIdSvg } from '@/svg/useIdSvg';
 import { POLICES } from '@/theme/polices';
 
-import { Etiquette, HAUTEUR_ETIQUETTE, LARGEUR_ETIQUETTE, type Face } from './Etiquette';
+import { CarteEnigme } from './CarteEnigme';
+import { HAUTEUR_ETIQUETTE, LARGEUR_ETIQUETTE, type Face } from './Etiquette';
 import { IconeDe, IconeRetourner } from './icones';
-import { PERSPECTIVE, styleFace } from './retournement';
-import { useRetournement } from './useRetournement';
 
 /** Part de la hauteur occupée par la feuille relevée, sous le bandeau. */
 const PART_FEUILLE = 0.85;
 /** Agrandissement de l'étiquette dans la maquette, réduit si la place manque. */
 const ECHELLE_ETIQUETTE = 1.1;
+
+/** Une étiquette du carrousel : la courante, ou celle qui sort pendant un glissement. */
+type Carte = {
+  cle: number;
+  enigme: Enigme;
+  /** Face voulue : quand elle change, l'étiquette se retourne. */
+  face: Face;
+  /** Née hors de l'écran, à droite, pour entrer en glissant. */
+  entree: boolean;
+  /** En train de sortir par la gauche. */
+  sortie: boolean;
+};
 
 type Props = {
   palette: Palette;
@@ -60,22 +71,58 @@ export function EcranEnigme({
     const tirage = creerTirage(enigmes, aleatoire);
     return { tirer: tirage, premiere: tirage() };
   });
-  const [enigme, setEnigme] = useState(premiere);
-  const { face, cible, progression, reduit, retourner, poser } = useRetournement((arrivee) => {
-    if (arrivee === 'verso') {
-      AccessibilityInfo.announceForAccessibility(
-        `Réponse\u00a0: ${enigme.reponse}. ${enigme.explication}`,
-      );
-    }
-  });
+  const [cartes, setCartes] = useState<Carte[]>(() => [
+    { cle: 0, enigme: premiere, face: 'recto', entree: false, sortie: false },
+  ]);
+  // La face dont les boutons s'affichent : elle change à la fin de chaque animation.
+  const [face, setFace] = useState<Face>('recto');
+  // Verrou commun au retournement et au glissement : un appui pendant une animation est
+  // ignoré. Une ref, pour que deux appuis dans la même image ne passent pas tous les deux.
+  const occupe = useRef(false);
+  const prochaineCle = useRef(1);
+  const { width: largeurFenetre } = useWindowDimensions();
   // Recalculée à chaque rendu : EcranDuMoment la rafraîchit au retour au premier plan.
   const date = formaterDateDuJour(maintenant ?? new Date());
   const [zone, setZone] = useState({ largeur: 0, hauteur: 0 });
 
-  const autreEnigme = () => {
-    if (!poser('recto')) return;
-    setEnigme(tirer());
+  const retourner = (vers: Face) => {
+    // Déjà sur cette face : aucune animation ne rendrait le verrou.
+    if (occupe.current || vers === face) return;
+    occupe.current = true;
+    setCartes((cs) => cs.map((c) => (c.sortie ? c : { ...c, face: vers })));
   };
+
+  const surRetournee = (carte: Carte, arrivee: Face) => {
+    occupe.current = false;
+    setFace(arrivee);
+    if (arrivee === 'verso') {
+      AccessibilityInfo.announceForAccessibility(
+        `Réponse\u00a0: ${carte.enigme.reponse}. ${carte.enigme.explication}`,
+      );
+    }
+  };
+
+  // L'étiquette courante sort telle quelle (au verso si la réponse est affichée) pendant
+  // que la suivante entre au recto.
+  const autreEnigme = () => {
+    if (occupe.current) return;
+    occupe.current = true;
+    const nouvelle: Carte = {
+      cle: prochaineCle.current++,
+      enigme: tirer(),
+      face: 'recto',
+      entree: true,
+      sortie: false,
+    };
+    setCartes((cs) => [...cs.map((c) => ({ ...c, sortie: true })), nouvelle]);
+  };
+
+  const surEntree = () => {
+    occupe.current = false;
+    setFace('recto');
+  };
+
+  const surSortie = (cle: number) => setCartes((cs) => cs.filter((c) => c.cle !== cle));
 
   const surMesure = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
@@ -90,6 +137,9 @@ export function EcranEnigme({
           zone.largeur / LARGEUR_ETIQUETTE,
         )
       : ECHELLE_ETIQUETTE;
+  // Assez pour quitter l'écran : l'étiquette est centrée et moins large que la fenêtre.
+  // Divisée par l'échelle, car le décalage s'applique dans le repère de l'étiquette.
+  const distance = largeurFenetre / echelle;
 
   return (
     <View style={[styles.ecran, { backgroundColor: p.fond_scene, paddingTop: insets.top }]}>
@@ -114,18 +164,19 @@ export function EcranEnigme({
 
             <View style={styles.zoneEtiquette} onLayout={surMesure}>
               <View style={[styles.pile, { transform: [{ scale: echelle }] }]}>
-                {FACES.filter((f) => f === face || f === cible).map((f) => (
-                  <FaceAnimee
-                    key={f}
-                    face={f}
-                    progression={progression}
-                    reduit={reduit}
-                    // Pendant le retournement, la face d'arrivée reste muette pour le
-                    // lecteur d'écran : la réponse est annoncée une fois l'étiquette posée.
-                    cachee={f !== face}
-                  >
-                    <Etiquette enigme={enigme} face={f} palette={p} />
-                  </FaceAnimee>
+                {cartes.map((c) => (
+                  <CarteEnigme
+                    key={c.cle}
+                    enigme={c.enigme}
+                    palette={p}
+                    face={c.face}
+                    entree={c.entree}
+                    sortie={c.sortie}
+                    distance={distance}
+                    onRetournee={(arrivee) => surRetournee(c, arrivee)}
+                    onEntree={surEntree}
+                    onSortie={() => surSortie(c.cle)}
+                  />
                 ))}
               </View>
             </View>
@@ -167,40 +218,6 @@ export function EcranEnigme({
         </View>
       </View>
     </View>
-  );
-}
-
-const FACES: readonly Face[] = ['recto', 'verso'];
-
-type PropsFace = {
-  face: Face;
-  progression: SharedValue<number>;
-  reduit: boolean;
-  cachee: boolean;
-  children: ReactNode;
-};
-
-/** Une face de l'étiquette, tournée et inclinée sur le thread de l'interface. */
-function FaceAnimee({ face, progression, reduit, cachee, children }: PropsFace) {
-  const style = useAnimatedStyle(() => {
-    const s = styleFace(face, progression.value, reduit);
-    return {
-      opacity: s.opacite,
-      transform: [
-        { perspective: PERSPECTIVE },
-        { rotate: `${s.inclinaison}deg` },
-        { rotateY: `${s.rotationY}deg` },
-      ],
-    };
-  });
-  return (
-    <Animated.View
-      style={[styles.face, style]}
-      aria-hidden={cachee}
-      importantForAccessibility={cachee ? 'no-hide-descendants' : 'auto'}
-    >
-      {children}
-    </Animated.View>
   );
 }
 
@@ -309,7 +326,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pile: { width: LARGEUR_ETIQUETTE, height: HAUTEUR_ETIQUETTE },
-  face: { ...StyleSheet.absoluteFill, backfaceVisibility: 'hidden' },
   actions: { gap: 4 },
   principal: {
     minHeight: 52,
