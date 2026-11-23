@@ -9,6 +9,7 @@ import {
 } from '@animpartner/shared';
 import { useState, type ReactNode } from 'react';
 import {
+  AccessibilityInfo,
   Pressable,
   StyleSheet,
   Text,
@@ -16,6 +17,7 @@ import {
   type LayoutChangeEvent,
   type PressableProps,
 } from 'react-native';
+import Animated, { useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, Path, Pattern, Rect } from 'react-native-svg';
 
@@ -24,6 +26,8 @@ import { POLICES } from '@/theme/polices';
 
 import { Etiquette, HAUTEUR_ETIQUETTE, LARGEUR_ETIQUETTE, type Face } from './Etiquette';
 import { IconeDe, IconeRetourner } from './icones';
+import { PERSPECTIVE, styleFace } from './retournement';
+import { useRetournement } from './useRetournement';
 
 /** Part de la hauteur occupée par la feuille relevée, sous le bandeau. */
 const PART_FEUILLE = 0.85;
@@ -57,14 +61,20 @@ export function EcranEnigme({
     return { tirer: tirage, premiere: tirage() };
   });
   const [enigme, setEnigme] = useState(premiere);
-  const [face, setFace] = useState<Face>('recto');
+  const { face, cible, progression, reduit, retourner, poser } = useRetournement((arrivee) => {
+    if (arrivee === 'verso') {
+      AccessibilityInfo.announceForAccessibility(
+        `Réponse\u00a0: ${enigme.reponse}. ${enigme.explication}`,
+      );
+    }
+  });
   // Recalculée à chaque rendu : EcranDuMoment la rafraîchit au retour au premier plan.
   const date = formaterDateDuJour(maintenant ?? new Date());
   const [zone, setZone] = useState({ largeur: 0, hauteur: 0 });
 
   const autreEnigme = () => {
+    if (!poser('recto')) return;
     setEnigme(tirer());
-    setFace('recto');
   };
 
   const surMesure = (e: LayoutChangeEvent) => {
@@ -103,12 +113,20 @@ export function EcranEnigme({
             </View>
 
             <View style={styles.zoneEtiquette} onLayout={surMesure}>
-              <View
-                style={{
-                  transform: [{ rotate: face === 'recto' ? '-2deg' : '2deg' }, { scale: echelle }],
-                }}
-              >
-                <Etiquette enigme={enigme} face={face} palette={p} />
+              <View style={[styles.pile, { transform: [{ scale: echelle }] }]}>
+                {FACES.filter((f) => f === face || f === cible).map((f) => (
+                  <FaceAnimee
+                    key={f}
+                    face={f}
+                    progression={progression}
+                    reduit={reduit}
+                    // Pendant le retournement, la face d'arrivée reste muette pour le
+                    // lecteur d'écran : la réponse est annoncée une fois l'étiquette posée.
+                    cachee={f !== face}
+                  >
+                    <Etiquette enigme={enigme} face={f} palette={p} />
+                  </FaceAnimee>
+                ))}
               </View>
             </View>
 
@@ -119,7 +137,7 @@ export function EcranEnigme({
                     palette={p}
                     libelle="Voir la réponse"
                     icone={<IconeRetourner taille={20} couleur={p.bouton_texte} />}
-                    onPress={() => setFace('verso')}
+                    onPress={() => retourner('verso')}
                   />
                   <BoutonSecondaire
                     palette={p}
@@ -140,7 +158,7 @@ export function EcranEnigme({
                     palette={p}
                     libelle="Revoir l'énigme"
                     icone={<IconeRetourner taille={18} couleur={p.lien} />}
-                    onPress={() => setFace('recto')}
+                    onPress={() => retourner('recto')}
                   />
                 </>
               )}
@@ -149,6 +167,40 @@ export function EcranEnigme({
         </View>
       </View>
     </View>
+  );
+}
+
+const FACES: readonly Face[] = ['recto', 'verso'];
+
+type PropsFace = {
+  face: Face;
+  progression: SharedValue<number>;
+  reduit: boolean;
+  cachee: boolean;
+  children: ReactNode;
+};
+
+/** Une face de l'étiquette, tournée et inclinée sur le thread de l'interface. */
+function FaceAnimee({ face, progression, reduit, cachee, children }: PropsFace) {
+  const style = useAnimatedStyle(() => {
+    const s = styleFace(face, progression.value, reduit);
+    return {
+      opacity: s.opacite,
+      transform: [
+        { perspective: PERSPECTIVE },
+        { rotate: `${s.inclinaison}deg` },
+        { rotateY: `${s.rotationY}deg` },
+      ],
+    };
+  });
+  return (
+    <Animated.View
+      style={[styles.face, style]}
+      aria-hidden={cachee}
+      importantForAccessibility={cachee ? 'no-hide-descendants' : 'auto'}
+    >
+      {children}
+    </Animated.View>
   );
 }
 
@@ -256,6 +308,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  pile: { width: LARGEUR_ETIQUETTE, height: HAUTEUR_ETIQUETTE },
+  face: { ...StyleSheet.absoluteFill, backfaceVisibility: 'hidden' },
   actions: { gap: 4 },
   principal: {
     minHeight: 52,
