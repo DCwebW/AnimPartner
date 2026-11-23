@@ -1,6 +1,7 @@
 import type { Enigme, Palette } from '@animpartner/shared';
 import { useEffect, useEffectEvent, useState, type ReactNode } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, type AccessibilityActionEvent } from 'react-native';
+import { GestureDetector, usePanGesture } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
   ReduceMotion,
@@ -12,6 +13,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
+import { DUREE_RETOUR_MS, decalageSuivi, decisionBalayage, type Decision } from './balayage';
 import { Etiquette, HAUTEUR_ETIQUETTE, LARGEUR_ETIQUETTE, type Face } from './Etiquette';
 import {
   DUREE_FONDU_ENCHAINE_MS,
@@ -29,17 +31,39 @@ import {
   styleFace,
 } from './retournement';
 
+/** Côté de l'écran par lequel une étiquette entre ou sort. */
+export type Cote = 'gauche' | 'droite';
+/** Changement d'énigme demandé par le geste ou le lecteur d'écran. */
+export type Sens = Exclude<Decision, 'retour'>;
+
 type Props = {
   enigme: Enigme;
   palette: Palette;
   /** La face voulue : quand elle change, l'étiquette se retourne. */
   face: Face;
-  /** L'étiquette naît hors de l'écran, à droite, et glisse jusqu'au centre. */
-  entree: boolean;
-  /** L'étiquette glisse hors de l'écran par la gauche, telle quelle. */
-  sortie: boolean;
+  /** Côté par lequel l'étiquette entre en glissant jusqu'au centre ; `null` : déjà là. */
+  entree: Cote | null;
+  /** Côté par lequel l'étiquette quitte l'écran, telle quelle ; `null` : elle reste. */
+  sortie: Cote | null;
+  /** Largeur de l'écran. */
+  largeurEcran: number;
   /** Largeur à parcourir pour quitter l'écran, dans le repère de l'étiquette. */
   distance: number;
+  /** Il existe une énigme précédente : le balayage vers la droite y mène. */
+  peutReculer: boolean;
+  /**
+   * Verrou commun aux animations, lu et pris par le geste sur le thread de l'interface.
+   * L'écran le tient à jour avec son propre verrou.
+   */
+  verrou: SharedValue<boolean>;
+  /** Le geste vient de prendre le verrou. */
+  onVerrouPris: () => void;
+  /** Balayage non validé : l'étiquette est revenue au centre et rend le verrou. */
+  onVerrouRendu: () => void;
+  /** Balayage validé : le verrou est déjà pris, l'écran change d'énigme. */
+  onBalayee: (sens: Sens) => void;
+  /** Action du lecteur d'écran : l'écran vérifie le verrou lui-même. */
+  onAction: (sens: Sens) => void;
   /** Fin du retournement : l'étiquette est posée sur `face`. */
   onRetournee: (face: Face) => void;
   /** Fin de l'entrée : l'étiquette est au centre. */
@@ -61,8 +85,8 @@ const SANS_REDUCTION = ReduceMotion.Never;
  * Une étiquette du carrousel. Elle porte son propre état d'animation : celle qui sort
  * reste figée sur sa face pendant que la suivante entre au recto. Les animations
  * démarrent dans des effets, une fois la nouvelle étiquette ou la face d'arrivée montée :
- * jamais d'image où l'une manquerait. Entre le départ et l'arrivée, tout se passe sur le
- * thread de l'interface.
+ * jamais d'image où l'une manquerait. Le geste déplace l'étiquette sur le thread de
+ * l'interface, sans rendu React à chaque image.
  */
 export function CarteEnigme({
   enigme,
@@ -70,7 +94,14 @@ export function CarteEnigme({
   face,
   entree,
   sortie,
+  largeurEcran,
   distance,
+  peutReculer,
+  verrou,
+  onVerrouPris,
+  onVerrouRendu,
+  onBalayee,
+  onAction,
   onRetournee,
   onEntree,
   onSortie,
@@ -79,7 +110,11 @@ export function CarteEnigme({
   // La face à plat ; elle rejoint `face` à la fin du retournement.
   const [faceAuRepos, setFaceAuRepos] = useState(face);
   const progression = useSharedValue(progressionDe(face));
-  const position = useSharedValue(entree ? POSITION_ENTREE : POSITION_POSEE);
+  const position = useSharedValue(
+    entree === 'droite' ? POSITION_ENTREE : entree === 'gauche' ? POSITION_SORTIE : POSITION_POSEE,
+  );
+  // Ce geste-ci a pris le verrou : lui seul déplace l'étiquette et décide au relâcher.
+  const suivi = useSharedValue(false);
 
   const retournee = useEffectEvent((arrivee: Face) => {
     setFaceAuRepos(arrivee);
@@ -110,7 +145,7 @@ export function CarteEnigme({
   }, [face, faceAuRepos, progression, reduit]);
 
   useEffect(() => {
-    if (!entree) return;
+    if (entree === null) return;
     position.set(
       withTiming(POSITION_POSEE, configGlissement(reduit), (fini) => {
         if (fini) scheduleOnRN(entreeFinie);
@@ -123,9 +158,15 @@ export function CarteEnigme({
   }, []);
 
   useEffect(() => {
-    if (!sortie) return;
+    if (sortie === null) return;
+    const cible = sortie === 'gauche' ? POSITION_SORTIE : POSITION_ENTREE;
+    const config = configGlissement(reduit);
+    // Après un balayage, l'étiquette part de là où le pouce l'a laissée : elle garde la
+    // même vitesse sur le chemin qui reste.
+    const reste = Math.min(1, Math.abs(cible - position.get()));
+    if (!reduit) config.duration = Math.max(DUREE_SORTIE_MIN_MS, config.duration * reste);
     position.set(
-      withTiming(POSITION_SORTIE, configGlissement(reduit), (fini) => {
+      withTiming(cible, config, (fini) => {
         if (fini) scheduleOnRN(sortieFinie);
       }),
     );
@@ -133,35 +174,117 @@ export function CarteEnigme({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortie]);
 
+  // La configuration du geste est relue à chaque rendu : ses rappels voient les dernières
+  // props.
+  const geste = usePanGesture({
+    enabled: sortie === null,
+    // Seul un mouvement horizontal franc devient un balayage.
+    activeOffsetX: [-12, 12],
+    failOffsetY: [-12, 12],
+    // Un identifiant par énigme : deux étiquettes voisines ne portent jamais la même.
+    testID: `balayage-${enigme.id}`,
+    onActivate: () => {
+      'worklet';
+      if (verrou.get()) return;
+      verrou.set(true);
+      suivi.set(true);
+      scheduleOnRN(onVerrouPris);
+    },
+    onUpdate: (e) => {
+      'worklet';
+      // Animations réduites : l'étiquette ne suit pas le pouce.
+      if (!suivi.get() || reduit) return;
+      position.set(POSITION_POSEE - decalageSuivi(e.translationX, peutReculer) / largeurEcran);
+    },
+    onDeactivate: (e) => {
+      'worklet';
+      if (!suivi.get()) return;
+      suivi.set(false);
+      const decision = e.canceled
+        ? 'retour'
+        : decisionBalayage({
+            decalage: e.translationX,
+            vitesse: e.velocityX,
+            largeur: largeurEcran,
+            peutReculer,
+          });
+      if (decision !== 'retour') {
+        scheduleOnRN(onBalayee, decision);
+        return;
+      }
+      position.set(
+        withTiming(
+          POSITION_POSEE,
+          {
+            duration: DUREE_RETOUR_MS,
+            easing: Easing.out(Easing.cubic),
+            reduceMotion: SANS_REDUCTION,
+          },
+          () => {
+            verrou.set(false);
+            scheduleOnRN(onVerrouRendu);
+          },
+        ),
+      );
+    },
+  });
+
   const styleCarte = useAnimatedStyle(() => {
     const s = styleGlissement(position.value, distance, reduit);
     return { opacity: s.opacite, transform: [{ translateX: s.decalage }] };
   });
 
+  const courante = sortie === null;
+  const actions = [
+    { name: 'suivante', label: 'Énigme suivante' },
+    ...(peutReculer ? [{ name: 'precedente', label: 'Énigme précédente' }] : []),
+  ];
+  const surAction = (e: AccessibilityActionEvent) => {
+    const nom = e.nativeEvent.actionName;
+    if (nom === 'suivante' || nom === 'precedente') onAction(nom);
+  };
+
   return (
-    <Animated.View
-      style={[styles.carte, styleCarte]}
-      pointerEvents="none"
-      // L'étiquette qui s'en va ne se lit plus.
-      aria-hidden={sortie}
-      importantForAccessibility={sortie ? 'no-hide-descendants' : 'auto'}
-    >
-      {FACES.filter((f) => f === faceAuRepos || f === face).map((f) => (
-        <FaceAnimee
-          key={f}
-          face={f}
-          progression={progression}
-          reduit={reduit}
-          // Pendant le retournement, la face d'arrivée reste muette pour le lecteur
-          // d'écran : la réponse est annoncée une fois l'étiquette posée.
-          cachee={f !== faceAuRepos}
-        >
-          <Etiquette enigme={enigme} face={f} palette={palette} />
-        </FaceAnimee>
-      ))}
-    </Animated.View>
+    <GestureDetector gesture={geste}>
+      <Animated.View
+        style={[styles.carte, styleCarte]}
+        pointerEvents={courante ? 'auto' : 'none'}
+        // L'étiquette courante se lit d'un bloc, avec ses actions : le lecteur d'écran
+        // peut changer d'énigme sans le geste. Celle qui s'en va ne se lit plus.
+        accessible={courante}
+        accessibilityLabel={courante ? libelle(enigme, faceAuRepos) : undefined}
+        accessibilityActions={courante ? actions : undefined}
+        onAccessibilityAction={courante ? surAction : undefined}
+        aria-hidden={!courante}
+        importantForAccessibility={courante ? 'auto' : 'no-hide-descendants'}
+      >
+        {FACES.filter((f) => f === faceAuRepos || f === face).map((f) => (
+          <FaceAnimee
+            key={f}
+            face={f}
+            progression={progression}
+            reduit={reduit}
+            // Pendant le retournement, la face d'arrivée reste muette pour le lecteur
+            // d'écran : la réponse est annoncée une fois l'étiquette posée.
+            cachee={f !== faceAuRepos}
+          >
+            <Etiquette enigme={enigme} face={f} palette={palette} />
+          </FaceAnimee>
+        ))}
+      </Animated.View>
+    </GestureDetector>
   );
 }
+
+/** Ce que le lecteur d'écran dit de l'étiquette, selon la face à plat. */
+function libelle(enigme: Enigme, face: Face): string {
+  return face === 'recto'
+    ? `Énigme, de ${enigme.ageMin} à ${enigme.ageMax} ans\u00a0: ${enigme.question}`
+    : `Réponse\u00a0: ${enigme.reponse}. ${enigme.explication}`;
+}
+
+/** Durée minimale de la fin de sortie, quand le pouce a déjà presque sorti l'étiquette. */
+const DUREE_SORTIE_MIN_MS = 120;
 
 function configGlissement(reduit: boolean) {
   return reduit

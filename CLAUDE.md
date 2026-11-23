@@ -41,8 +41,9 @@ Documents de référence, à lire selon la tâche :
 ## Stack
 
 - **Application** : Expo (dernier SDK), React Native, TypeScript strict, Expo Router.
-  Animations avec `react-native-reanimated`, dessin avec `react-native-svg`, données
-  distantes avec TanStack Query (cache persisté pour le hors-ligne).
+  Animations avec `react-native-reanimated`, gestes avec `react-native-gesture-handler`,
+  dessin avec `react-native-svg`, données distantes avec TanStack Query (cache persisté
+  pour le hors-ligne).
 - **API** : Hono sur Cloudflare Workers. Accès à la base par `@neondatabase/serverless`
   et Drizzle ORM.
 - **Base** : Neon (Postgres). Migrations versionnées par `drizzle-kit`.

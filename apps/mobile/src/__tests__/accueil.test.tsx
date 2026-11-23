@@ -1,5 +1,6 @@
 import { CATALOGUE } from '@animpartner/shared';
 import { render, screen } from '@testing-library/react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Accueil from '@/app/index';
 import { lierQuestion } from '@/enigmes/typographie';
@@ -26,7 +27,7 @@ describe("Écran d'accueil", () => {
   afterAll(() => jest.useRealTimers());
 
   it('montre une énigme du catalogue dans le thème du moment', async () => {
-    await render(<Accueil />);
+    await render(<Accueil />, { wrapper: GestureHandlerRootView });
 
     expect(screen.getByRole('header', { name: 'Bonjour' })).toBeOnTheScreen();
     const affichee = CATALOGUE.filter((e) => screen.queryByText(lierQuestion(e.question)) !== null);

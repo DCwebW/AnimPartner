@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { Lancement } from '@/lancement/Lancement';
 import { FICHIERS_POLICES } from '@/theme/polices';
@@ -22,11 +23,14 @@ export default function RootLayout() {
   }, [pret]);
 
   return (
-    <Lancement affiche={pret} pret={pret}>
-      {/* Les écrans attendent les polices : un texte rendu avant garderait celle du système.
-          Le splash natif couvre ce moment. */}
-      {pret && <Stack screenOptions={{ headerShown: false }} />}
-      <StatusBar style="dark" />
-    </Lancement>
+    // Les gestes (balayage de l'étiquette) ne sont reconnus qu'à l'intérieur de cette vue.
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Lancement affiche={pret} pret={pret}>
+        {/* Les écrans attendent les polices : un texte rendu avant garderait celle du système.
+            Le splash natif couvre ce moment. */}
+        {pret && <Stack screenOptions={{ headerShown: false }} />}
+        <StatusBar style="dark" />
+      </Lancement>
+    </GestureHandlerRootView>
   );
 }
