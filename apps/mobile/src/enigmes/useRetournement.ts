@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import {
   cancelAnimation,
   Easing,
+  ReduceMotion,
   useReducedMotion,
   useSharedValue,
   withTiming,
@@ -55,6 +56,14 @@ export function useRetournement(surArrivee?: (face: Face) => void): Retournement
     [surArrivee],
   );
 
+  // Animation annulée : l'étiquette revient à plat sur sa face de départ, et l'écran
+  // reprend la main au lieu de rester verrouillé.
+  const annuler = useCallback(() => {
+    enCours.current = false;
+    setCible(null);
+    progression.set(progressionDe(face));
+  }, [face, progression]);
+
   const retourner = useCallback(
     (vers: Face) => {
       if (enCours.current || vers === face) return;
@@ -63,16 +72,22 @@ export function useRetournement(surArrivee?: (face: Face) => void): Retournement
       progression.set(
         withTiming(
           progressionDe(vers),
-          reduit
-            ? { duration: DUREE_FONDU_REDUIT_MS, easing: Easing.linear }
-            : { duration: DUREE_RETOURNEMENT_MS, easing: Easing.inOut(Easing.cubic) },
+          {
+            ...(reduit
+              ? { duration: DUREE_FONDU_REDUIT_MS, easing: Easing.linear }
+              : { duration: DUREE_RETOURNEMENT_MS, easing: Easing.inOut(Easing.cubic) }),
+            // La réduction des animations est déjà traitée ici (fondu au lieu de la
+            // rotation) : sans cela, Reanimated sauterait à la fin et supprimerait le fondu.
+            reduceMotion: ReduceMotion.Never,
+          },
           (fini) => {
             if (fini) scheduleOnRN(terminer, vers);
+            else scheduleOnRN(annuler);
           },
         ),
       );
     },
-    [face, progression, reduit, terminer],
+    [face, progression, reduit, terminer, annuler],
   );
 
   const poser = useCallback(

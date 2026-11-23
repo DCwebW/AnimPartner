@@ -1,6 +1,7 @@
 import { PALETTES, type Enigme } from '@animpartner/shared';
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { AccessibilityInfo } from 'react-native';
+import { ReduceMotion, ReducedMotionConfig } from 'react-native-reanimated';
 
 import { EcranEnigme } from '@/enigmes/EcranEnigme';
 import { DUREE_FONDU_REDUIT_MS, DUREE_RETOURNEMENT_MS } from '@/enigmes/retournement';
@@ -223,6 +224,34 @@ describe("retournement de l'étiquette", () => {
     await appuyer("Revoir l'énigme");
 
     expect(annonce).not.toHaveBeenCalled();
+  });
+
+  it('garde un vrai fondu quand Reanimated réduit aussi les animations', async () => {
+    // Le système réduit les animations : Reanimated sauterait à la fin de chaque
+    // animation, et le fondu deviendrait un changement instantané.
+    mockAnimationsReduites = true;
+    await render(
+      <>
+        <ReducedMotionConfig mode={ReduceMotion.Always} />
+        <EcranEnigme
+          enigmes={enigmes}
+          aleatoire={aleatoire}
+          maintenant={new Date(2026, 3, 15, 10)}
+          palette={PALETTES.beauTemps}
+          bandeau={null}
+        />
+      </>,
+    );
+    const enigme = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(DUREE_FONDU_REDUIT_MS / 2);
+
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+    expect(screen.queryByText(enigme.reponse)).not.toBeOnTheScreen();
+
+    await avancer(DUREE_FONDU_REDUIT_MS / 2 + 50);
+    expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
   });
 
   it('se contente d’un fondu court quand les animations sont réduites', async () => {
