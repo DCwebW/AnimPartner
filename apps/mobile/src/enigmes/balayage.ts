@@ -5,8 +5,11 @@
 export const SEUIL_DISTANCE = 0.3;
 /** Vitesse au relâcher, en points par seconde, qui valide un balayage même court. */
 export const SEUIL_VITESSE = 600;
-/** Part du déplacement du pouce suivie quand l'étiquette n'a nulle part où aller. */
-export const RESISTANCE = 0.25;
+/**
+ * Déplacement maximal de l'étiquette, en points, quand elle n'a nulle part où aller :
+ * elle suit le pouce de moins en moins et n'atteint jamais cette limite.
+ */
+export const RESISTANCE_MAX = 60;
 /** Retour de l'étiquette au centre quand le balayage n'est pas validé. */
 export const DUREE_RETOUR_MS = 200;
 
@@ -45,8 +48,12 @@ export function decisionBalayage({ decalage, vitesse, largeur, peutReculer }: Re
   return 'retour';
 }
 
-/** Déplacement de l'étiquette sous le pouce : freiné vers la droite sans précédente. */
+/**
+ * Déplacement de l'étiquette sous le pouce. Vers la droite sans précédente, elle résiste
+ * de plus en plus (amortissement exponentiel, borné par `RESISTANCE_MAX`).
+ */
 export function decalageSuivi(decalage: number, peutReculer: boolean): number {
   'worklet';
-  return decalage > 0 && !peutReculer ? decalage * RESISTANCE : decalage;
+  if (decalage <= 0 || peutReculer) return decalage;
+  return RESISTANCE_MAX * (1 - Math.exp(-decalage / RESISTANCE_MAX));
 }

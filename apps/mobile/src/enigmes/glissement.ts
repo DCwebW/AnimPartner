@@ -16,6 +16,20 @@ export const POSITION_POSEE = 1;
 /** Hors de l'écran, à gauche : là où l'étiquette s'en va. */
 export const POSITION_SORTIE = 2;
 
+/** Durée minimale de la fin de sortie, quand le pouce a déjà presque sorti l'étiquette. */
+export const DUREE_SORTIE_MIN_MS = 120;
+
+/**
+ * Durée de la sortie d'une étiquette depuis `position` jusqu'à `cible`. Après un
+ * balayage, l'étiquette part de là où le pouce l'a laissée : elle garde la vitesse du
+ * glissement sur le chemin qui reste. Animations réduites : le fondu dure toujours autant.
+ */
+export function dureeSortie(position: number, cible: number, reduit: boolean): number {
+  if (reduit) return DUREE_FONDU_ENCHAINE_MS;
+  const reste = Math.min(1, Math.abs(cible - position));
+  return Math.max(DUREE_SORTIE_MIN_MS, DUREE_GLISSEMENT_MS * reste);
+}
+
 export type StyleGlissement = {
   /** Décalage horizontal, en points : positif à droite. */
   decalage: number;

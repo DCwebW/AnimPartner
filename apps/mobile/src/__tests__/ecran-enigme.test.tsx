@@ -397,13 +397,18 @@ const agir = async (actionName: 'suivante' | 'precedente', attendre = true) => {
 const FRANC = Dimensions.get('window').width / 2;
 
 /** Balaie l'étiquette au pouce, de `translationX` points, puis laisse l'animation finir. */
-const balayer = async (translationX: number, velocityX = 0) => {
+const balayer = async (
+  translationX: number,
+  velocityX = 0,
+  fin: State = State.END,
+  id = enigmeAffichee().id,
+) => {
   await act(async () => {
-    fireGestureHandler(getByGestureTestId(`balayage-${enigmeAffichee().id}`), [
+    fireGestureHandler(getByGestureTestId(`balayage-${id}`), [
       { state: State.BEGAN, translationX: 0, velocityX: 0 },
       { state: State.ACTIVE, translationX: translationX / 2, velocityX },
       { state: State.ACTIVE, translationX, velocityX },
-      { state: State.END, translationX, velocityX },
+      { state: fin, translationX, velocityX },
     ]);
   });
   // Le geste rend la main au fil JavaScript par un minuteur : on le laisse passer et React
@@ -568,5 +573,59 @@ describe('balayage au pouce', () => {
 
     await balayer(FRANC);
     expect(questionAffichee()).toBe(premiere);
+  });
+});
+
+describe('balayage et actions pendant un glissement', () => {
+  it('rend la main après un geste annulé par le système', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+
+    await balayer(-FRANC, 0, State.CANCELLED);
+
+    expect(questionAffichee()).toBe(premiere);
+    await appuyer('Une autre énigme');
+    expect(questionAffichee()).not.toBe(premiere);
+  });
+
+  it('ignore le geste pendant un glissement', async () => {
+    await rendre();
+    const premiere = enigmeAffichee();
+    await appuyer('Une autre énigme');
+    const seconde = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await avancer(100);
+    await balayer(FRANC, 0, State.END, seconde.id);
+
+    // Le geste vers la précédente est ignoré : on est sur une troisième énigme.
+    const troisieme = questionAffichee();
+    expect(troisieme).not.toBe(seconde.question);
+    expect(troisieme).not.toBe(premiere.question);
+  });
+
+  it('ignore les actions d’accessibilité pendant un glissement', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await avancer(100);
+    await agir('precedente', false);
+    await avancer(DUREE_GLISSEMENT_MS + 50);
+
+    expect(questionAffichee()).not.toBe(premiere);
+  });
+
+  it('annonce la nouvelle énigme au lecteur d’écran une fois arrivée', async () => {
+    const annonce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    await rendre();
+    const premiere = enigmeAffichee();
+
+    await agir('suivante');
+    const seconde = enigmeAffichee();
+    expect(annonce).toHaveBeenLastCalledWith(`Énigme, de 7 à 10 ans\u00a0: ${seconde.question}`);
+
+    await agir('precedente');
+    expect(annonce).toHaveBeenLastCalledWith(`Énigme, de 7 à 10 ans\u00a0: ${premiere.question}`);
   });
 });

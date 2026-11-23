@@ -1,5 +1,5 @@
 import {
-  RESISTANCE,
+  RESISTANCE_MAX,
   SEUIL_DISTANCE,
   SEUIL_VITESSE,
   decalageSuivi,
@@ -31,7 +31,7 @@ describe('balayage au pouce', () => {
     expect(decisionBalayage({ ...base, decalage: -30, vitesse: -500 })).toBe('retour');
   });
 
-  it('suit la direction du lancer quand il contredit le déplacement', () => {
+  it('ramène l’étiquette au centre quand le lancer contredit un déplacement franc', () => {
     // Le pouce est allé loin à gauche puis a été relancé vers la droite.
     expect(decisionBalayage({ ...base, decalage: -150, vitesse: 800 })).toBe('retour');
     expect(decisionBalayage({ ...base, decalage: 150, vitesse: -800 })).toBe('retour');
@@ -44,11 +44,25 @@ describe('balayage au pouce', () => {
     expect(decisionBalayage({ ...debut, decalage: -200, vitesse: 0 })).toBe('suivante');
   });
 
-  it('suit le pouce, sauf vers la droite sans précédente où l’étiquette résiste', () => {
+  it('suit le pouce, sauf vers la droite sans précédente', () => {
     expect(decalageSuivi(-80, true)).toBe(-80);
     expect(decalageSuivi(80, true)).toBe(80);
     expect(decalageSuivi(-80, false)).toBe(-80);
-    expect(decalageSuivi(80, false)).toBe(80 * RESISTANCE);
-    expect(RESISTANCE).toBeLessThan(0.5);
+    expect(decalageSuivi(80, false)).toBeLessThan(80);
+  });
+
+  it('résiste de plus en plus vers la droite sans précédente, sans dépasser la limite', () => {
+    const pas = 20;
+    let precedent = 0;
+    let pentePrecedente = Infinity;
+    for (let d = pas; d <= 600; d += pas) {
+      const suivi = decalageSuivi(d, false);
+      const pente = (suivi - precedent) / pas;
+      expect(suivi).toBeGreaterThan(precedent);
+      expect(pente).toBeLessThan(pentePrecedente);
+      expect(suivi).toBeLessThan(RESISTANCE_MAX);
+      precedent = suivi;
+      pentePrecedente = pente;
+    }
   });
 });

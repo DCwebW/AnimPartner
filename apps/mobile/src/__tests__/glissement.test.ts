@@ -3,7 +3,9 @@ import {
   DUREE_GLISSEMENT_MS,
   POSITION_ENTREE,
   POSITION_POSEE,
+  DUREE_SORTIE_MIN_MS,
   POSITION_SORTIE,
+  dureeSortie,
   styleGlissement,
 } from '@/enigmes/glissement';
 
@@ -36,6 +38,18 @@ describe("glissement de l'étiquette", () => {
       expect(entrante.opacite).toBe(1);
       expect(sortante.opacite).toBe(1);
     }
+  });
+
+  it('finit la sortie à la même vitesse, depuis là où le pouce l’a laissée', () => {
+    expect(dureeSortie(POSITION_POSEE, POSITION_SORTIE, false)).toBe(DUREE_GLISSEMENT_MS);
+    expect(dureeSortie(POSITION_POSEE, POSITION_ENTREE, false)).toBe(DUREE_GLISSEMENT_MS);
+    expect(dureeSortie(1.5, POSITION_SORTIE, false)).toBe(DUREE_GLISSEMENT_MS / 2);
+    expect(dureeSortie(0.6, POSITION_ENTREE, false)).toBeCloseTo(DUREE_GLISSEMENT_MS * 0.6);
+    expect(dureeSortie(1.95, POSITION_SORTIE, false)).toBe(DUREE_SORTIE_MIN_MS);
+  });
+
+  it('garde la durée du fondu quand les animations sont réduites', () => {
+    expect(dureeSortie(POSITION_POSEE, POSITION_SORTIE, true)).toBe(DUREE_FONDU_ENCHAINE_MS);
   });
 
   it('remplace le glissement par un fondu enchaîné quand les animations sont réduites', () => {

@@ -30,7 +30,7 @@ import Svg, { Defs, Path, Pattern, Rect } from 'react-native-svg';
 import { useIdSvg } from '@/svg/useIdSvg';
 import { POLICES } from '@/theme/polices';
 
-import { CarteEnigme, type Cote, type Sens } from './CarteEnigme';
+import { CarteEnigme, libelleEtiquette, type Cote, type Sens } from './CarteEnigme';
 import { HAUTEUR_ETIQUETTE, LARGEUR_ETIQUETTE, type Face } from './Etiquette';
 import { IconeDe, IconeRetourner } from './icones';
 
@@ -153,9 +153,11 @@ export function EcranEnigme({
 
   const autreEnigme = () => changer('suivante');
 
-  const surEntree = () => {
+  const surEntree = (carte: Carte) => {
     liberer();
     setFace('recto');
+    // L'étiquette qui avait le focus du lecteur d'écran est partie : on lit la nouvelle.
+    AccessibilityInfo.announceForAccessibility(libelleEtiquette(carte.enigme, 'recto'));
   };
 
   const surSortie = (cle: number) => setCartes((cs) => cs.filter((c) => c.cle !== cle));
@@ -217,7 +219,7 @@ export function EcranEnigme({
                     onBalayee={(sens) => changer(sens, true)}
                     onAction={(sens) => changer(sens)}
                     onRetournee={(arrivee) => surRetournee(c, arrivee)}
-                    onEntree={surEntree}
+                    onEntree={() => surEntree(c)}
                     onSortie={() => surSortie(c.cle)}
                   />
                 ))}

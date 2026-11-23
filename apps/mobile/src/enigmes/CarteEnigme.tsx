@@ -21,6 +21,7 @@ import {
   POSITION_ENTREE,
   POSITION_POSEE,
   POSITION_SORTIE,
+  dureeSortie,
   styleGlissement,
 } from './glissement';
 import {
@@ -125,6 +126,12 @@ export function CarteEnigme({
 
   useEffect(() => {
     if (face === faceAuRepos) return;
+    // Un geste pris dans la même image qu'un appui (course entre les deux verrous) lâche
+    // l'étiquette : elle revient au centre et le geste ne décidera rien.
+    suivi.set(false);
+    if (Math.abs(position.get() - POSITION_POSEE) > 0.001) {
+      position.set(withTiming(POSITION_POSEE, CONFIG_RETOUR));
+    }
     progression.set(
       withTiming(
         progressionDe(face),
@@ -142,7 +149,7 @@ export function CarteEnigme({
         },
       ),
     );
-  }, [face, faceAuRepos, progression, reduit]);
+  }, [face, faceAuRepos, position, progression, reduit, suivi]);
 
   useEffect(() => {
     if (entree === null) return;
@@ -159,16 +166,30 @@ export function CarteEnigme({
 
   useEffect(() => {
     if (sortie === null) return;
+    // Plus rien ne doit déplacer l'étiquette qui sort : un geste encore actif (course avec
+    // un appui) annulerait sa sortie et la laisserait à l'écran.
+    suivi.set(false);
     const cible = sortie === 'gauche' ? POSITION_SORTIE : POSITION_ENTREE;
-    const config = configGlissement(reduit);
-    // Après un balayage, l'étiquette part de là où le pouce l'a laissée : elle garde la
-    // même vitesse sur le chemin qui reste.
-    const reste = Math.min(1, Math.abs(cible - position.get()));
-    if (!reduit) config.duration = Math.max(DUREE_SORTIE_MIN_MS, config.duration * reste);
+    const depart = position.get();
+    // Après un balayage, l'étiquette part de là où le pouce l'a laissée, déjà lancée :
+    // elle décélère sans repartir de zéro.
+    const lancee = Math.abs(depart - POSITION_POSEE) > 0.01;
     position.set(
-      withTiming(cible, config, (fini) => {
-        if (fini) scheduleOnRN(sortieFinie);
-      }),
+      withTiming(
+        cible,
+        {
+          duration: dureeSortie(depart, cible, reduit),
+          easing: reduit
+            ? Easing.linear
+            : lancee
+              ? Easing.out(Easing.cubic)
+              : Easing.inOut(Easing.cubic),
+          reduceMotion: SANS_REDUCTION,
+        },
+        (fini) => {
+          if (fini) scheduleOnRN(sortieFinie);
+        },
+      ),
     );
     // Au départ de la sortie seulement.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -213,18 +234,10 @@ export function CarteEnigme({
         return;
       }
       position.set(
-        withTiming(
-          POSITION_POSEE,
-          {
-            duration: DUREE_RETOUR_MS,
-            easing: Easing.out(Easing.cubic),
-            reduceMotion: SANS_REDUCTION,
-          },
-          () => {
-            verrou.set(false);
-            scheduleOnRN(onVerrouRendu);
-          },
-        ),
+        withTiming(POSITION_POSEE, CONFIG_RETOUR, () => {
+          verrou.set(false);
+          scheduleOnRN(onVerrouRendu);
+        }),
       );
     },
   });
@@ -252,7 +265,7 @@ export function CarteEnigme({
         // L'étiquette courante se lit d'un bloc, avec ses actions : le lecteur d'écran
         // peut changer d'énigme sans le geste. Celle qui s'en va ne se lit plus.
         accessible={courante}
-        accessibilityLabel={courante ? libelle(enigme, faceAuRepos) : undefined}
+        accessibilityLabel={courante ? libelleEtiquette(enigme, faceAuRepos) : undefined}
         accessibilityActions={courante ? actions : undefined}
         onAccessibilityAction={courante ? surAction : undefined}
         aria-hidden={!courante}
@@ -277,14 +290,18 @@ export function CarteEnigme({
 }
 
 /** Ce que le lecteur d'écran dit de l'étiquette, selon la face à plat. */
-function libelle(enigme: Enigme, face: Face): string {
+export function libelleEtiquette(enigme: Enigme, face: Face): string {
   return face === 'recto'
     ? `Énigme, de ${enigme.ageMin} à ${enigme.ageMax} ans\u00a0: ${enigme.question}`
     : `Réponse\u00a0: ${enigme.reponse}. ${enigme.explication}`;
 }
 
-/** Durée minimale de la fin de sortie, quand le pouce a déjà presque sorti l'étiquette. */
-const DUREE_SORTIE_MIN_MS = 120;
+/** Retour de l'étiquette au centre, quand un balayage n'est pas validé. */
+const CONFIG_RETOUR = {
+  duration: DUREE_RETOUR_MS,
+  easing: Easing.out(Easing.cubic),
+  reduceMotion: SANS_REDUCTION,
+};
 
 function configGlissement(reduit: boolean) {
   return reduit
