@@ -1,6 +1,8 @@
 import { PALETTES, type Enigme } from '@animpartner/shared';
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
-import { AccessibilityInfo } from 'react-native';
+import { AccessibilityInfo, Dimensions } from 'react-native';
+import { GestureHandlerRootView, State } from 'react-native-gesture-handler';
+import { fireGestureHandler, getByGestureTestId } from 'react-native-gesture-handler/jest-utils';
 import { ReduceMotion, ReducedMotionConfig } from 'react-native-reanimated';
 
 import { EcranEnigme } from '@/enigmes/EcranEnigme';
@@ -42,12 +44,17 @@ const rendre = () =>
       palette={PALETTES.beauTemps}
       bandeau={null}
     />,
+    { wrapper: GestureHandlerRootView },
   );
 
 const questionAffichee = () =>
   enigmes.find((e) => screen.queryByText(e.question) !== null)?.question;
 
-const enigmeAffichee = () => enigmes.find((e) => e.question === questionAffichee())!;
+/** L'énigme de l'étiquette courante, au recto comme au verso. */
+const enigmeAffichee = () =>
+  enigmes.find(
+    (e) => screen.queryByText(e.question) !== null || screen.queryByText(e.reponse) !== null,
+  )!;
 
 const avancer = async (ms: number) => {
   await act(async () => {
@@ -242,6 +249,7 @@ describe("retournement de l'étiquette", () => {
           bandeau={null}
         />
       </>,
+      { wrapper: GestureHandlerRootView },
     );
     const enigme = enigmeAffichee();
 
@@ -367,5 +375,257 @@ describe("glissement vers l'énigme suivante", () => {
     expect(screen.queryByText(premiere.reponse, { includeHiddenElements: true })).toBeNull();
     expect(screen.getByText('Énigme')).toBeOnTheScreen();
     expect(questionAffichee()).not.toBe(premiere.question);
+  });
+});
+
+/** L'étiquette courante, telle que le lecteur d'écran la présente. */
+// La bibliothèque de test normalise les espaces : l'insécable devient une espace simple.
+const carteCourante = () => screen.getByLabelText(/^(Énigme, de|Réponse\s:)/);
+
+const actionsProposees = () =>
+  (carteCourante().props.accessibilityActions as { name: string; label: string }[]).map(
+    (a) => a.label,
+  );
+
+/** Déclenche une action d'accessibilité de l'étiquette, puis laisse l'animation finir. */
+const agir = async (actionName: 'suivante' | 'precedente', attendre = true) => {
+  await fireEvent(carteCourante(), 'accessibilityAction', { nativeEvent: { actionName } });
+  if (attendre) await avancer(DUREE_RETOURNEMENT_MS + 50);
+};
+
+/** Un balayage franc : la moitié de la largeur de l'écran. */
+const FRANC = Dimensions.get('window').width / 2;
+
+/** Balaie l'étiquette au pouce, de `translationX` points, puis laisse l'animation finir. */
+const balayer = async (
+  translationX: number,
+  velocityX = 0,
+  fin: State = State.END,
+  id = enigmeAffichee().id,
+) => {
+  await act(async () => {
+    fireGestureHandler(getByGestureTestId(`balayage-${id}`), [
+      { state: State.BEGAN, translationX: 0, velocityX: 0 },
+      { state: State.ACTIVE, translationX: translationX / 2, velocityX },
+      { state: State.ACTIVE, translationX, velocityX },
+      { state: fin, translationX, velocityX },
+    ]);
+  });
+  // Le geste rend la main au fil JavaScript par un minuteur : on le laisse passer et React
+  // monter la nouvelle étiquette avant de faire courir l'animation.
+  await avancer(20);
+  await avancer(DUREE_RETOURNEMENT_MS + 50);
+};
+
+describe('historique et actions de l’étiquette', () => {
+  it('propose « Énigme suivante », sans « Énigme précédente » au début', async () => {
+    await rendre();
+    expect(actionsProposees()).toEqual(['Énigme suivante']);
+
+    await agir('suivante');
+    expect(actionsProposees()).toEqual(['Énigme suivante', 'Énigme précédente']);
+  });
+
+  it('revient à l’énigme d’avant, au recto, puis retrouve la suivante sans nouveau tirage', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+    await agir('suivante');
+    const seconde = questionAffichee();
+    expect(seconde).not.toBe(premiere);
+
+    await agir('precedente');
+    expect(questionAffichee()).toBe(premiere);
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+
+    await agir('suivante');
+    expect(questionAffichee()).toBe(seconde);
+  });
+
+  it('le bouton « Une autre énigme » avance aussi dans l’historique', async () => {
+    await rendre();
+    await appuyer('Une autre énigme');
+    const seconde = questionAffichee();
+    await agir('precedente');
+
+    await appuyer('Une autre énigme');
+    expect(questionAffichee()).toBe(seconde);
+  });
+
+  it('ramène l’énigme précédente au recto même depuis le verso', async () => {
+    await rendre();
+    const premiere = enigmeAffichee();
+    await agir('suivante');
+    await appuyer('Voir la réponse');
+
+    await agir('precedente');
+
+    expect(screen.getByText(premiere.question)).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+  });
+
+  it('ignore les actions pendant une animation', async () => {
+    await rendre();
+    const enigme = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(100);
+    await agir('suivante', false);
+    await avancer(DUREE_RETOURNEMENT_MS);
+
+    expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
+  });
+
+  it('décrit l’étiquette au lecteur d’écran selon sa face', async () => {
+    await rendre();
+    const enigme = enigmeAffichee();
+    expect(carteCourante().props.accessibilityLabel).toBe(
+      `Énigme, de 7 à 10 ans\u00a0: ${enigme.question}`,
+    );
+
+    await appuyer('Voir la réponse');
+    expect(carteCourante().props.accessibilityLabel).toBe(
+      `Réponse\u00a0: ${enigme.reponse}. ${enigme.explication}`,
+    );
+  });
+});
+
+describe('balayage au pouce', () => {
+  it('passe à l’énigme suivante en balayant vers la gauche', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+
+    await balayer(-FRANC);
+
+    expect(questionAffichee()).not.toBe(premiere);
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+  });
+
+  it('revient à l’énigme précédente en balayant vers la droite', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+    await balayer(-FRANC);
+
+    await balayer(FRANC);
+
+    expect(questionAffichee()).toBe(premiere);
+  });
+
+  it('valide un geste vif et court', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+
+    await balayer(-40, -900);
+
+    expect(questionAffichee()).not.toBe(premiere);
+  });
+
+  it('remet l’étiquette en place après un balayage trop court', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+
+    await balayer(-50);
+
+    expect(questionAffichee()).toBe(premiere);
+    // L'écran a repris la main : le bouton répond.
+    await appuyer('Voir la réponse');
+    expect(screen.getByRole('button', { name: "Revoir l'énigme" })).toBeOnTheScreen();
+  });
+
+  it('ne recule pas avant la première énigme', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+
+    await balayer(FRANC);
+
+    expect(questionAffichee()).toBe(premiere);
+    await appuyer('Une autre énigme');
+    expect(questionAffichee()).not.toBe(premiere);
+  });
+
+  it('fait sortir l’étiquette du verso telle quelle, la nouvelle arrivant au recto', async () => {
+    await rendre();
+    await appuyer('Voir la réponse');
+
+    await balayer(-FRANC);
+
+    expect(screen.getByText('Énigme')).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+  });
+
+  it('ignore le geste pendant un retournement', async () => {
+    await rendre();
+    const enigme = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await avancer(100);
+    await balayer(-FRANC);
+
+    expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
+  });
+
+  it('fonctionne avec les animations réduites', async () => {
+    mockAnimationsReduites = true;
+    await rendre();
+    const premiere = questionAffichee();
+
+    await balayer(-FRANC);
+    expect(questionAffichee()).not.toBe(premiere);
+
+    await balayer(FRANC);
+    expect(questionAffichee()).toBe(premiere);
+  });
+});
+
+describe('balayage et actions pendant un glissement', () => {
+  it('rend la main après un geste annulé par le système', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+
+    await balayer(-FRANC, 0, State.CANCELLED);
+
+    expect(questionAffichee()).toBe(premiere);
+    await appuyer('Une autre énigme');
+    expect(questionAffichee()).not.toBe(premiere);
+  });
+
+  it('ignore le geste pendant un glissement', async () => {
+    await rendre();
+    const premiere = enigmeAffichee();
+    await appuyer('Une autre énigme');
+    const seconde = enigmeAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await avancer(100);
+    await balayer(FRANC, 0, State.END, seconde.id);
+
+    // Le geste vers la précédente est ignoré : on est sur une troisième énigme.
+    const troisieme = questionAffichee();
+    expect(troisieme).not.toBe(seconde.question);
+    expect(troisieme).not.toBe(premiere.question);
+  });
+
+  it('ignore les actions d’accessibilité pendant un glissement', async () => {
+    await rendre();
+    const premiere = questionAffichee();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await avancer(100);
+    await agir('precedente', false);
+    await avancer(DUREE_GLISSEMENT_MS + 50);
+
+    expect(questionAffichee()).not.toBe(premiere);
+  });
+
+  it('annonce la nouvelle énigme au lecteur d’écran une fois arrivée', async () => {
+    const annonce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    await rendre();
+    const premiere = enigmeAffichee();
+
+    await agir('suivante');
+    const seconde = enigmeAffichee();
+    expect(annonce).toHaveBeenLastCalledWith(`Énigme, de 7 à 10 ans\u00a0: ${seconde.question}`);
+
+    await agir('precedente');
+    expect(annonce).toHaveBeenLastCalledWith(`Énigme, de 7 à 10 ans\u00a0: ${premiere.question}`);
   });
 });

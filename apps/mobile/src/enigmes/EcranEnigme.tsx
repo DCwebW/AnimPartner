@@ -1,6 +1,11 @@
 import {
   CATALOGUE,
+  avancer,
+  courant,
+  creerHistorique,
   creerTirage,
+  peutReculer,
+  reculer,
   enigmesAffichables,
   formaterDateDuJour,
   type Aleatoire,
@@ -18,13 +23,14 @@ import {
   type LayoutChangeEvent,
   type PressableProps,
 } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, Path, Pattern, Rect } from 'react-native-svg';
 
 import { useIdSvg } from '@/svg/useIdSvg';
 import { POLICES } from '@/theme/polices';
 
-import { CarteEnigme } from './CarteEnigme';
+import { CarteEnigme, libelleEtiquette, type Cote, type Sens } from './CarteEnigme';
 import { HAUTEUR_ETIQUETTE, LARGEUR_ETIQUETTE, type Face } from './Etiquette';
 import { IconeDe, IconeRetourner } from './icones';
 
@@ -39,10 +45,10 @@ type Carte = {
   enigme: Enigme;
   /** Face voulue : quand elle change, l'étiquette se retourne. */
   face: Face;
-  /** Née hors de l'écran, à droite, pour entrer en glissant. */
-  entree: boolean;
-  /** En train de sortir par la gauche. */
-  sortie: boolean;
+  /** Côté par lequel elle entre en glissant ; `null` : déjà au centre. */
+  entree: Cote | null;
+  /** Côté par lequel elle sort ; `null` : c'est l'étiquette courante. */
+  sortie: Cote | null;
 };
 
 type Props = {
@@ -72,13 +78,26 @@ export function EcranEnigme({
     return { tirer: tirage, premiere: tirage() };
   });
   const [cartes, setCartes] = useState<Carte[]>(() => [
-    { cle: 0, enigme: premiere, face: 'recto', entree: false, sortie: false },
+    { cle: 0, enigme: premiere, face: 'recto', entree: null, sortie: null },
   ]);
+  // Les énigmes vues pendant la session, pour revenir en arrière.
+  const [historique, setHistorique] = useState(() => creerHistorique(premiere));
   // La face dont les boutons s'affichent : elle change à la fin de chaque animation.
   const [face, setFace] = useState<Face>('recto');
-  // Verrou commun au retournement et au glissement : un appui pendant une animation est
-  // ignoré. Une ref, pour que deux appuis dans la même image ne passent pas tous les deux.
+  // Verrou commun au retournement, au glissement et au geste : un appui pendant une
+  // animation est ignoré. Une ref, pour que deux appuis dans la même image ne passent pas
+  // tous les deux, doublée d'une valeur partagée que le geste lit sur le thread de
+  // l'interface.
   const occupe = useRef(false);
+  const verrou = useSharedValue(false);
+  const verrouiller = () => {
+    occupe.current = true;
+    verrou.set(true);
+  };
+  const liberer = () => {
+    occupe.current = false;
+    verrou.set(false);
+  };
   const prochaineCle = useRef(1);
   const { width: largeurFenetre } = useWindowDimensions();
   // Recalculée à chaque rendu : EcranDuMoment la rafraîchit au retour au premier plan.
@@ -88,12 +107,12 @@ export function EcranEnigme({
   const retourner = (vers: Face) => {
     // Déjà sur cette face : aucune animation ne rendrait le verrou.
     if (occupe.current || vers === face) return;
-    occupe.current = true;
+    verrouiller();
     setCartes((cs) => cs.map((c) => (c.sortie ? c : { ...c, face: vers })));
   };
 
   const surRetournee = (carte: Carte, arrivee: Face) => {
-    occupe.current = false;
+    liberer();
     setFace(arrivee);
     if (arrivee === 'verso') {
       AccessibilityInfo.announceForAccessibility(
@@ -102,24 +121,43 @@ export function EcranEnigme({
     }
   };
 
-  // L'étiquette courante sort telle quelle (au verso si la réponse est affichée) pendant
-  // que la suivante entre au recto.
-  const autreEnigme = () => {
-    if (occupe.current) return;
-    occupe.current = true;
+  /**
+   * Change d'énigme : la suivante (déjà vue après un retour en arrière, sinon tirée) entre
+   * par la droite, la précédente par la gauche. L'étiquette courante sort de l'autre côté,
+   * telle quelle (au verso si la réponse est affichée) ; la nouvelle arrive au recto.
+   * `verrouPris` : le geste tient déjà le verrou.
+   */
+  const changer = (sens: Sens, verrouPris = false) => {
+    if (!verrouPris && occupe.current) return;
+    const suivant = sens === 'suivante' ? avancer(historique, tirer) : reculer(historique);
+    if (suivant === historique) {
+      // Rien avant la première énigme.
+      if (verrouPris) liberer();
+      return;
+    }
+    verrouiller();
+    setHistorique(suivant);
+    const versLaGauche = sens === 'suivante';
     const nouvelle: Carte = {
       cle: prochaineCle.current++,
-      enigme: tirer(),
+      enigme: courant(suivant),
       face: 'recto',
-      entree: true,
-      sortie: false,
+      entree: versLaGauche ? 'droite' : 'gauche',
+      sortie: null,
     };
-    setCartes((cs) => [...cs.map((c) => ({ ...c, sortie: true })), nouvelle]);
+    setCartes((cs) => [
+      ...cs.map((c) => ({ ...c, sortie: c.sortie ?? (versLaGauche ? 'gauche' : 'droite') })),
+      nouvelle,
+    ]);
   };
 
-  const surEntree = () => {
-    occupe.current = false;
+  const autreEnigme = () => changer('suivante');
+
+  const surEntree = (carte: Carte) => {
+    liberer();
     setFace('recto');
+    // L'étiquette qui avait le focus du lecteur d'écran est partie : on lit la nouvelle.
+    AccessibilityInfo.announceForAccessibility(libelleEtiquette(carte.enigme, 'recto'));
   };
 
   const surSortie = (cle: number) => setCartes((cs) => cs.filter((c) => c.cle !== cle));
@@ -172,9 +210,16 @@ export function EcranEnigme({
                     face={c.face}
                     entree={c.entree}
                     sortie={c.sortie}
+                    largeurEcran={largeurFenetre}
                     distance={distance}
+                    peutReculer={peutReculer(historique)}
+                    verrou={verrou}
+                    onVerrouPris={() => (occupe.current = true)}
+                    onVerrouRendu={() => (occupe.current = false)}
+                    onBalayee={(sens) => changer(sens, true)}
+                    onAction={(sens) => changer(sens)}
                     onRetournee={(arrivee) => surRetournee(c, arrivee)}
-                    onEntree={surEntree}
+                    onEntree={() => surEntree(c)}
                     onSortie={() => surSortie(c.cle)}
                   />
                 ))}
