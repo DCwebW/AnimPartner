@@ -309,6 +309,29 @@ describe("glissement vers l'énigme suivante", () => {
     await avancer(DUREE_GLISSEMENT_MS / 2 + 50);
 
     expect(screen.queryByText(premiere.question, { includeHiddenElements: true })).toBeNull();
+    expect(questionAffichee()).toBeDefined();
+    expect(questionAffichee()).not.toBe(premiere.question);
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+  });
+
+  it.each([
+    ['normales', false],
+    ['réduites', true],
+  ])('rend la main après chaque glissement (animations %s)', async (_, reduites) => {
+    mockAnimationsReduites = reduites;
+    await rendre();
+    const vues = [questionAffichee()];
+
+    await appuyer('Une autre énigme');
+    vues.push(questionAffichee());
+    await appuyer('Une autre énigme');
+    vues.push(questionAffichee());
+    expect(new Set(vues).size).toBe(3);
+
+    const enigme = enigmeAffichee();
+    await appuyer('Voir la réponse');
+    expect(screen.getByText(enigme.reponse)).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: "Revoir l'énigme" })).toBeOnTheScreen();
   });
 
   it('ignore un appui pendant le glissement', async () => {

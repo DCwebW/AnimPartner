@@ -116,7 +116,9 @@ export function CarteEnigme({
         if (fini) scheduleOnRN(entreeFinie);
       }),
     );
-    // Au montage seulement : l'entrée ne se rejoue pas.
+    // Au montage seulement, et sans `reduit` en dépendance : relancée après un changement
+    // du réglage, l'entrée finirait aussitôt et appellerait `onEntree` à contretemps,
+    // libérant le verrou pendant un retournement.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

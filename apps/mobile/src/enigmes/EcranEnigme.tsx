@@ -86,7 +86,8 @@ export function EcranEnigme({
   const [zone, setZone] = useState({ largeur: 0, hauteur: 0 });
 
   const retourner = (vers: Face) => {
-    if (occupe.current) return;
+    // Déjà sur cette face : aucune animation ne rendrait le verrou.
+    if (occupe.current || vers === face) return;
     occupe.current = true;
     setCartes((cs) => cs.map((c) => (c.sortie ? c : { ...c, face: vers })));
   };
