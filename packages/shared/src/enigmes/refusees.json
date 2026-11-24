@@ -1,0 +1,23 @@
+[
+  {
+    "id": "etre-humain",
+    "question": "Qui marche à quatre pattes le matin, sur deux jambes à midi et sur trois le soir\u00a0?",
+    "reponse": "L'être humain",
+    "raison": "Énigme du Sphinx, trop connue pour être crédible dans l'application. Reproposée par l'agent le 24 novembre 2026 et refusée à nouveau.",
+    "refuseeLe": "2026-11-17"
+  },
+  {
+    "id": "avenir",
+    "question": "Je suis toujours devant toi, mais tu ne peux jamais m'atteindre ni me voir. Qui suis-je\u00a0?",
+    "reponse": "L'avenir",
+    "raison": "Aucune reformulation possible : «\u00a0demain\u00a0» et «\u00a0le futur\u00a0» restent aussi justes.",
+    "refuseeLe": "2026-11-24"
+  },
+  {
+    "id": "cinq-de-vingt-cinq",
+    "question": "Combien de fois peut-on soustraire 5 de 25\u00a0?",
+    "reponse": "Une seule fois",
+    "raison": "Fait appel au calcul, et la réponse paraît fausse mathématiquement.",
+    "refuseeLe": "2026-11-24"
+  }
+]

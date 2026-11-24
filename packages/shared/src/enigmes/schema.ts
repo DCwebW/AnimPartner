@@ -35,3 +35,26 @@ export type Enigme = z.infer<typeof EnigmeSchema>;
 
 /** Le catalogue entier : une liste d'énigmes. */
 export const CatalogueSchema = z.array(EnigmeSchema);
+
+/**
+ * Une énigme refusée par le porteur à la recette. L'agent des énigmes lit ces refus
+ * avant d'écrire : il ne repropose ni la réponse, ni le ressort, et la raison lui dit
+ * quel défaut éviter dans tout le lot.
+ */
+export const EnigmeRefuseeSchema = z
+  .object({
+    /** L'id qu'avait l'énigme quand elle a été refusée. */
+    id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'id en minuscules et tirets'),
+    question: z.string().trim().min(1),
+    reponse: z.string().trim().min(1),
+    /** Pourquoi le porteur l'a refusée, avec ses mots autant que possible. */
+    raison: z.string().trim().min(1),
+    /** Date du refus, au format AAAA-MM-JJ. */
+    refuseeLe: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'date au format AAAA-MM-JJ'),
+  })
+  .strict();
+
+export type EnigmeRefusee = z.infer<typeof EnigmeRefuseeSchema>;
+
+/** Le fichier des refus : une liste d'énigmes refusées. */
+export const RefuseesSchema = z.array(EnigmeRefuseeSchema);

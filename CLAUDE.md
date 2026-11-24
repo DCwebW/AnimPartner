@@ -94,6 +94,9 @@ Espaces de travail npm, Node 22 (`.nvmrc`). Sauf mention contraire, à lancer à
   (`packages/shared/src/enigmes/schema.ts`) dans les tests. Les espaces insécables s'y
   écrivent `\u00a0` (avant `? ! : ;` et à l'intérieur des « »). Les tests de
   `packages/shared` vivent dans `packages/shared/src/__tests__/`.
+- **Énigmes refusées** : `packages/shared/src/enigmes/refusees.json`, avec la raison de
+  chaque refus (schéma `EnigmeRefuseeSchema`). Un test fait échouer la CI si une
+  réponse refusée revient dans le catalogue. Toute énigme refusée à la recette y entre.
 
 ## Comment on travaille : des agents, une issue à la fois
 
