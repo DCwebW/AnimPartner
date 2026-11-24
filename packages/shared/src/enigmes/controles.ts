@@ -1,7 +1,7 @@
 // Contrôles de qualité du catalogue, utilisés par ses tests et par l'agent des énigmes.
 // Logique pure, sans React.
 
-import type { Enigme } from './schema';
+import type { Enigme, EnigmeRefusee } from './schema';
 
 /** Âges que le catalogue doit couvrir. */
 export const AGE_COUVERT_MIN = 3;
@@ -49,6 +49,23 @@ export function doublonsDeReponse(enigmes: readonly Enigme[]): Doublon[] {
     parCle.set(cle, [...(parCle.get(cle) ?? []), id]);
   }
   return [...parCle].filter(([, ids]) => ids.length > 1).map(([cle, ids]) => ({ cle, ids }));
+}
+
+export type RepriseDeRefus = { id: string; refusee: string };
+
+/**
+ * Les énigmes dont la réponse, une fois normalisée, est celle d'une énigme déjà refusée.
+ * Le ressort, lui, aucun contrôle ne le voit : l'agent le cherche en lisant les refus.
+ */
+export function reponsesRefuseesReprises(
+  enigmes: readonly Enigme[],
+  refusees: readonly EnigmeRefusee[],
+): RepriseDeRefus[] {
+  const refuseesParCle = new Map(refusees.map((r) => [cleReponse(r.reponse), r.id]));
+  return enigmes.flatMap(({ id, reponse }) => {
+    const refusee = refuseesParCle.get(cleReponse(reponse));
+    return refusee === undefined ? [] : [{ id, refusee }];
+  });
 }
 
 export type Couverture = { age: number; nombre: number };
