@@ -363,7 +363,7 @@
     "id": "zebre",
     "question": "Je ressemble à un cheval, mais j'ai des rayures noires et blanches. Qui suis-je\u00a0?",
     "reponse": "Le zèbre",
-    "explication": "Le zèbre est un cheval sauvage d'Afrique à rayures.",
+    "explication": "Le zèbre est un cousin du cheval qui vit en Afrique, couvert de rayures.",
     "ageMin": 4,
     "ageMax": 6,
     "statut": "validee",
