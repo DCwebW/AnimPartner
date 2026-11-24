@@ -14,8 +14,10 @@ Dans cet ordre, et arrête-toi à la première règle qui s'applique :
 1. **Le catalogue n'existe pas encore sur `main`** (il est créé par l'issue #5) : ne fais
    rien et termine en le disant.
 2. **Une PR d'énigmes est ouverte avec des commentaires du porteur** non traités :
-   reprends-la sur sa branche (corriger, remplacer ou retirer les énigmes visées). Rien
-   d'autre cette semaine.
+   reprends-la sur sa branche (corriger, remplacer ou retirer les énigmes visées). Chaque
+   énigme retirée à la demande du porteur entre dans
+   `packages/shared/src/enigmes/refusees.json`, avec la raison qu'il donne (voir § 3).
+   Rien d'autre cette semaine.
 3. **Une PR d'énigmes est ouverte sans nouveau commentaire** : elle attend la validation.
    Ne produis rien et termine en le disant.
 4. Sinon, propose un lot d'énigmes.
@@ -52,7 +54,23 @@ node -e "const c=require('./packages/shared/src/enigmes/catalogue.json');for(let
 
 ## 3. Écrire chaque énigme
 
-Lis **tout** le catalogue avant d'écrire. Chaque énigme :
+Lis **tout** le catalogue avant d'écrire, puis **toutes les énigmes refusées**
+(`packages/shared/src/enigmes/refusees.json`). N'en repropose aucune, ni sous une autre
+forme : un test refuse une réponse déjà refusée, mais le ressort, c'est à toi de le
+reconnaître. Lis surtout les raisons : elles disent quel défaut éviter dans tout le lot.
+
+Ce que le porteur a déjà refusé ou fait corriger à la recette, à ne pas reproduire :
+
+- **la culture générale ou le vocabulaire technique** : « le lit de la rivière », « le
+  cours d'eau », le tableau noir que les enfants ne connaissent plus ;
+- **un mot qui lance sur une fausse piste** : « nourrir » pour le feu fait penser à la
+  nourriture ;
+- **un mot qui donne la réponse** : « bouchon » pour la bouteille ;
+- **une phrase fausse au pied de la lettre** : « plus on m'enlève de terre » pour le trou ;
+- **les énigmes trop connues**, comme celle du Sphinx ;
+- **le calcul**, et les pièges de mots qui ont l'air d'une erreur de calcul.
+
+Chaque énigme :
 
 - respecte le schéma Zod `Enigme` de `packages/shared` (question de 140 caractères au
   plus, tranche d'âge, réponse, explication) ;
@@ -93,7 +111,8 @@ fusion : une PR non fusionnée n'arrive jamais sur `main`.
      en tableau : question, réponse, âge, explication, et **les autres réponses
      envisagées et pourquoi elles ne tiennent pas**.
   3. **La couverture par âge**, avant et après le lot.
-  4. Le rappel : « Retirez les énigmes refusées (ou commentez), puis fusionnez : la
+  4. Le rappel : « Commentez les énigmes refusées en donnant la raison : je les retire et
+     je les inscris dans `refusees.json` pour ne plus les reproposer. Puis fusionnez : la
      fusion vaut validation. »
 - Ne fusionne jamais la PR.
 
@@ -101,5 +120,7 @@ fusion : une PR non fusionnée n'arrive jamais sur `main`.
 
 - Modifier ou supprimer une énigme déjà sur `main` sans qu'un commentaire du porteur le
   demande.
-- Toucher au code, aux schémas, à la CI ou aux documents.
+- Toucher au code, aux schémas, à la CI ou aux documents. `catalogue.json` et
+  `refusees.json` sont les seuls fichiers que tu modifies.
+- Retirer une entrée de `refusees.json` : seul le porteur lève un refus.
 - Écrire dans une base de données : la copie vers Neon est le travail de la CI.
