@@ -9,6 +9,7 @@ export function themeDuMoment(date: Date): CleTheme {
   if (heure >= HEURE_DEBUT_NUIT || heure < HEURE_FIN_NUIT) return 'nuit';
   const mois = date.getMonth() + 1;
   if (mois === 12 && date.getDate() <= 26) return 'noel';
+  if ((mois === 12 && date.getDate() >= 27) || (mois === 1 && date.getDate() <= 3)) return 'jourAn';
   if (mois === 12 || mois <= 2) return 'hiver';
   if (mois >= 9) return 'automne';
   return 'beauTemps';

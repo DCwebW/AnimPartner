@@ -13,8 +13,10 @@ function rapport(a: string, b: string): number {
   return (x! + 0.05) / (y! + 0.05);
 }
 
-describe('contrastes du thème Noël (4,5:1 au moins)', () => {
-  const p = PALETTES.noel;
+describe.each([
+  ['Noël', PALETTES.noel],
+  ['Jour de l’an', PALETTES.jourAn],
+])('contrastes du thème %s (4,5:1 au moins)', (_theme, p) => {
   it.each([
     ['encre / recto', p.encre, p.recto],
     ['recto_accent / recto', p.recto_accent, p.recto],

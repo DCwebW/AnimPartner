@@ -16,6 +16,7 @@ import {
   FANIONS,
   LUEUR,
 } from './noel';
+import { Piece } from './Piece';
 import { useAnimationsActives, useBoucle } from './useBoucle';
 
 // Scène de Noël : sapins, cadeaux, guirlande de fanions et confettis.
@@ -52,49 +53,6 @@ function Sapin({ x, y, echelle }: { x: number; y: number; echelle: number }) {
       />
       <Path d="M-3 -4h6v7h-6z" fill="#6B3B20" />
     </G>
-  );
-}
-
-/** Une vue animée qui porte un petit dessin placé aux coordonnées du viewBox 390 × 200. */
-function Piece({
-  k,
-  x,
-  y,
-  l,
-  h,
-  origine,
-  style,
-  children,
-}: {
-  k: number;
-  x: number;
-  y: number;
-  l: number;
-  h: number;
-  /** Point d'origine des rotations et de l'échelle, en unités du viewBox, dans la pièce. */
-  origine: [number, number];
-  style: ReturnType<typeof useAnimatedStyle> | undefined;
-  children: React.ReactNode;
-}) {
-  return (
-    <Animated.View
-      pointerEvents="none"
-      style={[
-        {
-          position: 'absolute',
-          left: x * k,
-          top: y * k,
-          width: l * k,
-          height: h * k,
-          transformOrigin: [origine[0] * k, origine[1] * k, 0],
-        },
-        style,
-      ]}
-    >
-      <Svg width={l * k} height={h * k} viewBox={`${x} ${y} ${l} ${h}`} fill="none">
-        {children}
-      </Svg>
-    </Animated.View>
   );
 }
 
