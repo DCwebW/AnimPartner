@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 
 import { BandeauAutomne } from '@/bandeaux/BandeauAutomne';
 import { BandeauHiver } from '@/bandeaux/BandeauHiver';
+import { BandeauJourAn } from '@/bandeaux/BandeauJourAn';
 import { BandeauNoel } from '@/bandeaux/BandeauNoel';
 import { BandeauNuit } from '@/bandeaux/BandeauNuit';
 import { BandeauVent } from '@/bandeaux/BandeauVent';
@@ -13,6 +14,7 @@ const BANDEAUX: [string, string, ComponentType<{ largeur: number }>][] = [
   ['hiver', 'bandeau-hiver', BandeauHiver],
   ['automne', 'bandeau-automne', BandeauAutomne],
   ['Noël', 'bandeau-noel', BandeauNoel],
+  ['Jour de l’an', 'bandeau-jour-an', BandeauJourAn],
 ];
 
 describe.each(BANDEAUX)('bandeau %s', (_nom, testID, Bandeau) => {

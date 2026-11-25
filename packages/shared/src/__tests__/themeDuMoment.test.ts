@@ -10,10 +10,10 @@ describe('themeDuMoment', () => {
     expect(themeDuMoment(d(5, 10, 7, 0))).toBe('beauTemps');
   });
 
-  it('passe de l’automne à Noël le 1er décembre, puis à l’hiver le 27', () => {
+  it('passe de l’automne à Noël le 1er décembre, puis au Jour de l’an le 27', () => {
     expect(themeDuMoment(d(11, 30))).toBe('automne');
     expect(themeDuMoment(d(12, 1))).toBe('noel');
-    expect(themeDuMoment(d(12, 27))).toBe('hiver');
+    expect(themeDuMoment(d(12, 27))).toBe('jourAn');
   });
 
   it('passe de l’hiver au beau temps le 1er mars', () => {
@@ -38,7 +38,7 @@ describe('Noël', () => {
     expect(themeDuMoment(d(11, 30))).toBe('automne');
     expect(themeDuMoment(d(12, 1))).toBe('noel');
     expect(themeDuMoment(d(12, 26))).toBe('noel');
-    expect(themeDuMoment(d(12, 27))).toBe('hiver');
+    expect(themeDuMoment(d(12, 27))).toBe('jourAn');
   });
 
   it('cède à la nuit : la nuit du 15 décembre garde son bandeau', () => {
@@ -50,6 +50,30 @@ describe('Noël', () => {
   it('ne change pas la salutation : « Bonjour » le jour, « Bonsoir » la nuit', () => {
     expect(salutationDuMoment(d(12, 15, 12))).toBe('Bonjour');
     expect(salutationDuMoment(d(12, 15, 22))).toBe('Bonsoir');
+  });
+});
+
+describe('Jour de l’an', () => {
+  it('s’affiche du 27 décembre au 3 janvier en journée', () => {
+    expect(themeDuMoment(d(12, 26))).toBe('noel');
+    expect(themeDuMoment(d(12, 27))).toBe('jourAn');
+    expect(themeDuMoment(d(12, 31))).toBe('jourAn');
+    expect(themeDuMoment(d(1, 1))).toBe('jourAn');
+    expect(themeDuMoment(d(1, 3))).toBe('jourAn');
+    expect(themeDuMoment(d(1, 3, 19, 59))).toBe('jourAn');
+    expect(themeDuMoment(d(1, 4))).toBe('hiver');
+  });
+
+  it('cède à la nuit : la nuit du 31 décembre garde son bandeau', () => {
+    expect(themeDuMoment(d(12, 31, 22, 0))).toBe('nuit');
+    expect(themeDuMoment(d(1, 1, 6, 59))).toBe('nuit');
+    expect(themeDuMoment(d(1, 1, 7, 0))).toBe('jourAn');
+    expect(themeDuMoment(d(1, 3, 20, 0))).toBe('nuit');
+  });
+
+  it('ne change pas la salutation', () => {
+    expect(salutationDuMoment(d(12, 31, 12))).toBe('Bonjour');
+    expect(salutationDuMoment(d(12, 31, 22))).toBe('Bonsoir');
   });
 });
 

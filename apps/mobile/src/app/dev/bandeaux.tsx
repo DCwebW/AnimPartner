@@ -3,12 +3,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BandeauAutomne } from '@/bandeaux/BandeauAutomne';
 import { BandeauHiver } from '@/bandeaux/BandeauHiver';
+import { BandeauJourAn } from '@/bandeaux/BandeauJourAn';
 import { BandeauNoel } from '@/bandeaux/BandeauNoel';
 import { BandeauNuit } from '@/bandeaux/BandeauNuit';
 import { BandeauVent } from '@/bandeaux/BandeauVent';
 import { POLICES } from '@/theme/polices';
 
-// Route de développement : les cinq bandeaux l'un sous l'autre, pour la recette.
+// Route de développement : les six bandeaux l'un sous l'autre, pour la recette.
 export default function DevBandeaux() {
   const { width } = useWindowDimensions();
   const { top, bottom } = useSafeAreaInsets();
@@ -25,6 +26,8 @@ export default function DevBandeaux() {
       <BandeauAutomne largeur={width} />
       <Text style={styles.titre}>Noël</Text>
       <BandeauNoel largeur={width} />
+      <Text style={styles.titre}>Jour de l’an</Text>
+      <BandeauJourAn largeur={width} />
     </ScrollView>
   );
 }
