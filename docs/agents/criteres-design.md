@@ -29,11 +29,11 @@ faite.
 | --- | --- | --- | --- | --- |
 | 01 | Fêtes | Noël | 16 nov. 2026 | Automatique, du 1er au 26 décembre |
 | 02 | Fêtes | Jour de l'an | 23 nov. | Automatique, du 27 décembre au 3 janvier |
-| 03 | Fêtes | Épiphanie (galette des rois) | 30 nov. | Automatique, du 4 au 12 janvier |
-| 04 | Fêtes | Chandeleur (crêpes) | 7 déc. | Automatique, du 28 janvier au 3 février |
-| 05 | Fêtes | Carnaval (Mardi gras) | 14 déc. | Automatique, les 7 jours qui précèdent Mardi gras et Mardi gras (date mobile : Pâques − 47 jours) |
-| 06 | Fêtes | Pâques (chasse aux œufs) | 21 déc. | Automatique, du samedi précédant Pâques au lundi de Pâques (date mobile) |
-| 07 | Écran | Paramètres (derrière l'engrenage) | 28 déc. | Voir plus bas |
+| 07 | Écran | Paramètres (derrière l'engrenage) | 30 nov. | Voir plus bas |
+| 03 | Fêtes | Épiphanie (galette des rois) | 7 déc. | Automatique, du 4 au 12 janvier |
+| 04 | Fêtes | Chandeleur (crêpes) | 14 déc. | Automatique, du 28 janvier au 3 février |
+| 05 | Fêtes | Carnaval (Mardi gras) | 21 déc. | Automatique, les 7 jours qui précèdent Mardi gras et Mardi gras (date mobile : Pâques − 47 jours) |
+| 06 | Fêtes | Pâques (chasse aux œufs) | 28 déc. | Automatique, du samedi précédant Pâques au lundi de Pâques (date mobile) |
 | 08 | Paysages | Montagne | 4 janv. 2027 | Au choix, dans les paramètres |
 | 09 | Paysages | Plage | 11 janv. | Au choix |
 | 10 | Paysages | Forêt | 18 janv. | Au choix |
@@ -48,15 +48,22 @@ faite.
 | 19 | Pays | Japon | 22 mars | Au choix |
 
 Les fêtes viennent dans l'ordre du calendrier, pour que chaque thème soit codé avant sa
-date. La liste des paysages est une proposition : le porteur peut la changer ici avant
-leur tour.
+date. L'itération 07 passe avant l'Épiphanie (décision du 25 novembre 2026) : l'écran
+des paramètres est attendu par l'issue #55. Elle garde son numéro : son dossier est
+`design/propositions/07-parametres/`. L'ordre des lignes fait foi, pas les numéros.
+La liste des paysages est une proposition : le porteur peut la changer ici avant leur
+tour.
 
 ### Règles d'affichage
 
 - **Mode automatique** (par défaut) : la nuit garde son bandeau ; sinon une fête dans sa
   période passe devant la saison ; sinon la saison (hiver, automne, beau temps).
+- **Un thème par jour** dans les paramètres : un thème tiré chaque jour parmi les thèmes
+  au choix (saisons, paysages, pays), jamais le même deux jours de suite. Ni la nuit ni
+  les fêtes n'en font partie ; la nuit reprend le soir, une fête ne passe pas devant.
 - **Choix manuel** dans les paramètres : le thème choisi s'affiche jour et nuit, fêtes
   comprises, jusqu'au retour au mode automatique.
+- La salutation suit l'heure, quel que soit le mode.
 - Chaque issue de thème dit comment brancher sa règle dans `themeDuMoment` (fêtes) ou
   dans la liste des thèmes au choix (paysages, pays).
 
@@ -65,10 +72,22 @@ leur tour.
 Pas de bandeau cette fois : un écran ouvert par l'engrenage, dans le même cadre que
 l'écran d'énigme. Il contient :
 
-- le **prénom** (champ modifiable : il remplace la question de la première ouverture) ;
-- le **thème** : « Automatique » en premier, puis les thèmes au choix, chacun avec une
-  vignette de son bandeau ;
+- le **prénom** (champ modifiable : il change le prénom donné à la première ouverture) ;
+- le **thème** : « Automatique » en premier, puis « Un thème par jour », puis chaque
+  thème à choisir (fêtes, nuit, saisons, et plus tard paysages et pays), chacun avec
+  une vignette fixe de son bandeau ;
+- un interrupteur « Garder l'écran allumé » (pendant la lecture des énigmes) ;
+- un bouton « Effacer mes données », avec sa confirmation dépliée dans l'écran (pas
+  d'alerte système) ;
+- une section « À propos » : version, nombre d'énigmes, phrase de confidentialité,
+  crédits des polices ;
 - un bouton de retour vers l'énigme.
+
+Le comportement est déjà spécifié dans les issues #54 à #58 : la maquette les suit.
+L'issue de code existe donc déjà (#55). L'`issue.md` de cette itération, qui devient une
+issue à la fusion, ne la répète pas : titre « Écran des paramètres — compléments de la
+maquette », une liste des seuls détails visuels que #55 ne dit pas et des écarts de la
+maquette avec #54 à #58, et « Dépend de : #55 ».
 
 Le prévoir pour que la liste des thèmes s'allonge sans changer la mise en page : six
 paysages et six pays vont s'y ajouter.
