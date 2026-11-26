@@ -1,7 +1,8 @@
-import { themeDuMoment, type CleTheme } from '@animpartner/shared';
+import { salutationDuMoment, themeAffiche, type CleTheme } from '@animpartner/shared';
 import { useEffect, useState } from 'react';
 import { AppState, useWindowDimensions } from 'react-native';
 
+import { useModeTheme } from '@/reglages/useModeTheme';
 import { bandeauDe, paletteDe } from '@/theme/themes';
 
 import { EcranEnigme } from './EcranEnigme';
@@ -18,6 +19,7 @@ const horloge = () => new Date();
 /** L'écran d'énigme dans le thème du moment, recalculé au retour de l'app au premier plan. */
 export function EcranDuMoment({ force, maintenant = horloge }: Props) {
   const { width } = useWindowDimensions();
+  const { mode, charge } = useModeTheme();
   const [date, setDate] = useState(maintenant);
 
   useEffect(() => {
@@ -27,6 +29,11 @@ export function EcranDuMoment({ force, maintenant = horloge }: Props) {
     return () => abonnement.remove();
   }, [maintenant]);
 
-  const cle = force ?? themeDuMoment(date);
-  return <EcranEnigme palette={paletteDe(cle)} bandeau={bandeauDe(cle, width)} maintenant={date} />;
+  // Rien tant que le mode mémorisé n'est pas lu : pas de thème par défaut remplacé ensuite.
+  if (!charge && !force) return null;
+  const cle = force ?? themeAffiche(mode, date);
+  // La salutation suit l'heure, jamais le mode ; le thème forcé (recette) garde celle de sa palette.
+  const base = paletteDe(cle);
+  const palette = force ? base : { ...base, salut: salutationDuMoment(date) };
+  return <EcranEnigme palette={palette} bandeau={bandeauDe(cle, width)} maintenant={date} />;
 }
