@@ -1,12 +1,17 @@
 import type { CleTheme } from './palettes';
 
-const HEURE_DEBUT_NUIT = 20;
-const HEURE_FIN_NUIT = 7;
+export const HEURE_DEBUT_NUIT = 20;
+export const HEURE_FIN_NUIT = 7;
+
+/** Vrai entre 20 h et 7 h. */
+export function estNuit(date: Date): boolean {
+  const heure = date.getHours();
+  return heure >= HEURE_DEBUT_NUIT || heure < HEURE_FIN_NUIT;
+}
 
 /** Thème à afficher pour une date locale : la nuit prime, puis une fête dans sa période, puis la saison. */
 export function themeDuMoment(date: Date): CleTheme {
-  const heure = date.getHours();
-  if (heure >= HEURE_DEBUT_NUIT || heure < HEURE_FIN_NUIT) return 'nuit';
+  if (estNuit(date)) return 'nuit';
   const mois = date.getMonth() + 1;
   if (mois === 12 && date.getDate() <= 26) return 'noel';
   if ((mois === 12 && date.getDate() >= 27) || (mois === 1 && date.getDate() <= 3)) return 'jourAn';
