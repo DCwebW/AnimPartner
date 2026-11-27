@@ -1,3 +1,4 @@
+import { nettoyerPrenom } from '@animpartner/shared';
 import { useEffect, useSyncExternalStore } from 'react';
 
 import { ecrirePrenom, lirePrenom } from './prenom';
@@ -23,8 +24,11 @@ function lancerLecture() {
 }
 
 async function enregistrer(saisi: string) {
-  const prenom = await ecrirePrenom(saisi);
-  if (prenom !== null) publier({ prenom, charge: true, passe: true });
+  const prenom = nettoyerPrenom(saisi);
+  if (prenom === '') return;
+  // Si l'écriture échoue, le prénom sert quand même pour cette session.
+  await ecrirePrenom(prenom).catch(() => {});
+  publier({ prenom, charge: true, passe: true });
 }
 
 /** « Plus tard » : pas de prénom pour cette session, la question reviendra à l'ouverture suivante. */

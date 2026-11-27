@@ -4,7 +4,12 @@ import { z } from 'zod';
 export const PRENOM_MAX = 30;
 
 /** Prénom gardé sur le téléphone : `null` quand l'animateur n'en a pas donné. */
-export const PrenomSchema = z.string().trim().min(1).max(PRENOM_MAX).nullable();
+export const PrenomSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .refine((s) => Array.from(s).length <= PRENOM_MAX)
+  .nullable();
 
 /** Retire les espaces autour du prénom et le tronque à `PRENOM_MAX` caractères. */
 export function nettoyerPrenom(saisi: string): string {
