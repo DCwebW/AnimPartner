@@ -8,6 +8,7 @@ import {
   reculer,
   enigmesAffichables,
   formaterDateDuJour,
+  salutationAvecPrenom,
   type Aleatoire,
   type Enigme,
   type Palette,
@@ -61,6 +62,8 @@ type Props = {
   aleatoire?: Aleatoire;
   /** Date affichée ; par défaut, celle du téléphone à l'ouverture. */
   maintenant?: Date;
+  /** Prénom de l'animateur, ajouté à la salutation. */
+  prenom?: string | null;
 };
 
 export function EcranEnigme({
@@ -69,6 +72,7 @@ export function EcranEnigme({
   enigmes = enigmesAffichables(CATALOGUE),
   aleatoire,
   maintenant,
+  prenom,
 }: Props) {
   const insets = useSafeAreaInsets();
   // Le tirage et la première énigme naissent ensemble : si React appelle l'initialiseur
@@ -195,7 +199,7 @@ export function EcranEnigme({
           <View style={[styles.contenu, { paddingBottom: 26 + insets.bottom }]}>
             <View style={styles.entete}>
               <Text accessibilityRole="header" style={[styles.salut, { color: p.encre }]}>
-                {p.salut}
+                {salutationAvecPrenom(p.salut, prenom)}
               </Text>
               <Text style={[styles.date, { color: p.encre2 }]}>{date}</Text>
             </View>
