@@ -23,3 +23,4 @@ export {
   themeDuJour,
   type ModeTheme,
 } from './themes/modeTheme';
+export { PRENOM_MAX, PrenomSchema, nettoyerPrenom, salutationAvecPrenom } from './prenom';
