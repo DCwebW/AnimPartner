@@ -118,9 +118,10 @@ du projet écrit les issues, fait la recette sur son téléphone et fusionne.
    un PNG (par défaut dans `captures/`, ignoré par git) ; `npm run capture -- --maquette
    <Fichier.dc.html> [fichier]` capture la maquette à la même taille. Première fois : `npx playwright install chromium`
    (déjà présent dans le cloud).
-6. **Relecture** par un sous-agent relecteur : conformité à la spec, au design system,
-   aux règles ci-dessous. Deux ou trois allers-retours au plus ; au-delà, ouvrir la PR en
-   écrivant les réserves.
+6. **Relecture** par le sous-agent `relecteur` (`.claude/agents/relecteur.md`) :
+   conformité à la spec, au design system, aux règles ci-dessous. Lui donner seulement
+   le numéro de l'issue, la branche et les captures, sans résumé ni justification. Deux
+   ou trois allers-retours au plus ; au-delà, ouvrir la PR en écrivant les réserves.
 7. **La PR** porte `Closes #<numéro>`, un résumé, les captures, et une liste
    **« À vérifier sur téléphone »** pour tout ce que le web ne prouve pas : gestes,
    animations, clavier, zones protégées, stockage, fluidité.
