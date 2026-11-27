@@ -38,7 +38,20 @@ distantes, et signale le manque dans ton compte rendu.
   animations en Reanimated, en respectant la réduction des animations.
 - Ne modifie jamais `design/`.
 
-## 3. Livrer
+## 3. Faire relire
+
+- Une fois les vérifications de `CLAUDE.md` passées et les captures faites, lance le
+  sous-agent **`relecteur`** (`.claude/agents/relecteur.md`). Donne-lui seulement le
+  numéro de l'issue, la branche et les chemins des captures : ni résumé, ni
+  justification. Il relit à partir de l'issue, des maquettes et des règles, pas de ton
+  récit.
+- Corrige ses remarques « bloquant » et « à corriger », puis relance-le. Deux ou trois
+  allers-retours au plus ; au-delà, ouvre la PR en écrivant les réserves qui restent.
+- Reporte dans la liste « À vérifier sur téléphone » de la PR ce qu'il range sous « Pour
+  le téléphone ».
+- Pour une reprise de PR, relance-le de la même façon avant de pousser.
+
+## 4. Livrer
 
 - Branche `feat/<numéro>-<court-libellé>` (ou celle que l'environnement impose).
 - La PR suit `CLAUDE.md` : `Closes #<numéro>`, résumé, captures, liste « À vérifier sur
