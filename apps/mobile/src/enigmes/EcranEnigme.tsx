@@ -122,24 +122,16 @@ export function EcranEnigme({
     ageApplique.current = age;
     const liste = listePourAge(enigmes, age);
     const actuelle = courant(historique);
-    const tirage = creerTirage(liste, aleatoire);
     if (liste.includes(actuelle)) {
       // L'énigme affichée compte comme déjà vue : le nouveau tirage ne la redonne pas d'abord.
-      const premier = tirage();
-      const suite =
-        premier === actuelle && liste.length > 1
-          ? tirage
-          : (() => {
-              let encore = true;
-              return () => {
-                if (!encore) return tirage();
-                encore = false;
-                return premier;
-              };
-            })();
-      setTirage({ tirer: suite, premiere: actuelle });
+      const autres = liste.filter((e) => e !== actuelle);
+      setTirage({
+        tirer: creerTirage(autres.length > 0 ? autres : liste, aleatoire),
+        premiere: actuelle,
+      });
       setHistorique(creerHistorique(actuelle));
     } else {
+      const tirage = creerTirage(liste, aleatoire);
       const nouvelle = tirage();
       setTirage({ tirer: tirage, premiere: nouvelle });
       setHistorique(creerHistorique(nouvelle));

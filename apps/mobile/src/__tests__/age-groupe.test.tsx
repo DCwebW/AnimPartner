@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PALETTES, enigmesPourAge, type Enigme } from '@animpartner/shared';
-import { act, render, renderHook, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, renderHook, screen, waitFor } from '@testing-library/react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { EcranEnigme } from '@/enigmes/EcranEnigme';
@@ -77,6 +77,56 @@ const ecran = (age: number | null, aleatoire?: () => number) => (
 );
 
 describe('écran filtré par âge', () => {
+  it('repart au recto quand l’énigme affichée est remplacée', async () => {
+    const { rerender } = await render(
+      ecran(3, () => 0),
+      { wrapper: GestureHandlerRootView },
+    );
+    await fireEvent.press(screen.getByRole('button', { name: 'Voir la réponse' }));
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
+    expect(screen.getByRole('button', { name: "Revoir l'énigme" })).toBeOnTheScreen();
+    await rerender(ecran(11, () => 0));
+    expect(ids()).toEqual(['grand']);
+    expect(screen.getByRole('button', { name: 'Voir la réponse' })).toBeOnTheScreen();
+  });
+
+  it('ne redonne pas l’énigme conservée en premier et respecte le filtre ensuite', async () => {
+    const { rerender } = await render(
+      ecran(7, () => 0),
+      { wrapper: GestureHandlerRootView },
+    );
+    const avant = ids()[0]!;
+    const age = 8;
+    await rerender(ecran(age, () => 0));
+    expect(ids()).toEqual([avant]);
+    await fireEvent.press(screen.getByRole('button', { name: 'Une autre énigme' }));
+    await act(async () => {
+      jest.advanceTimersByTime(2000);
+    });
+    const apres = ids();
+    expect(apres).toHaveLength(1);
+    expect(apres[0]).not.toBe(avant);
+    expect(enigmesPourAge(enigmes, age).map((e) => e.id)).toContain(apres[0]);
+  });
+
+  it('retombe sur toutes les énigmes quand un changement d’âge ne laisse rien', async () => {
+    const seules = enigmes.filter((e) => e.ageMax < 6);
+    const vue = (age: number) => (
+      <EcranEnigme
+        enigmes={seules}
+        age={age}
+        maintenant={new Date(2026, 3, 15, 10)}
+        palette={PALETTES.beauTemps}
+        bandeau={null}
+      />
+    );
+    const { rerender } = await render(vue(4), { wrapper: GestureHandlerRootView });
+    await rerender(vue(11));
+    expect(screen.getByText('Petit\u00a0?')).toBeOnTheScreen();
+  });
+
   it('ne montre que des énigmes compatibles, dès le premier rendu', async () => {
     const compatibles = enigmesPourAge(enigmes, 7).map((e) => e.id);
     for (let i = 0; i < 20; i++) {
