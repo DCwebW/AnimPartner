@@ -7,13 +7,14 @@ import {
   peutReculer,
   reculer,
   enigmesAffichables,
+  enigmesPourAge,
   formaterDateDuJour,
   salutationAvecPrenom,
   type Aleatoire,
   type Enigme,
   type Palette,
 } from '@animpartner/shared';
-import { useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   AccessibilityInfo,
   Pressable,
@@ -64,7 +65,15 @@ type Props = {
   maintenant?: Date;
   /** Prénom de l'animateur, ajouté à la salutation. */
   prenom?: string | null;
+  /** Âge du plus jeune du groupe ; `null` ou absent : toutes les énigmes. */
+  age?: number | null;
 };
+
+/** Les énigmes de l'âge ; si aucune ne convient, toutes (le tirage refuse une liste vide). */
+function listePourAge(enigmes: readonly Enigme[], age: number | null): readonly Enigme[] {
+  const filtrees = enigmesPourAge(enigmes, age);
+  return filtrees.length > 0 ? filtrees : enigmes;
+}
 
 export function EcranEnigme({
   palette: p,
@@ -73,12 +82,13 @@ export function EcranEnigme({
   aleatoire,
   maintenant,
   prenom,
+  age = null,
 }: Props) {
   const insets = useSafeAreaInsets();
   // Le tirage et la première énigme naissent ensemble : si React appelle l'initialiseur
   // deux fois (mode strict), il garde un couple cohérent et n'en saute aucune.
-  const [{ tirer, premiere }] = useState(() => {
-    const tirage = creerTirage(enigmes, aleatoire);
+  const [{ tirer, premiere }, setTirage] = useState(() => {
+    const tirage = creerTirage(listePourAge(enigmes, age), aleatoire);
     return { tirer: tirage, premiere: tirage() };
   });
   const [cartes, setCartes] = useState<Carte[]>(() => [
@@ -103,6 +113,44 @@ export function EcranEnigme({
     verrou.set(false);
   };
   const prochaineCle = useRef(1);
+  // Quand l'âge change, un nouveau tirage démarre sur la liste filtrée. L'énigme affichée
+  // reste si elle convient ; sinon la première du nouveau tirage la remplace, au recto.
+  const ageApplique = useRef(age);
+  /* eslint-disable react-hooks/set-state-in-effect -- le tirage doit repartir quand le réglage change */
+  useEffect(() => {
+    if (age === ageApplique.current) return;
+    ageApplique.current = age;
+    const liste = listePourAge(enigmes, age);
+    const actuelle = courant(historique);
+    if (liste.includes(actuelle)) {
+      // L'énigme affichée compte comme déjà vue : le nouveau tirage ne la redonne pas d'abord.
+      const autres = liste.filter((e) => e !== actuelle);
+      setTirage({
+        tirer: creerTirage(autres.length > 0 ? autres : liste, aleatoire),
+        premiere: actuelle,
+      });
+      setHistorique(creerHistorique(actuelle));
+    } else {
+      const tirage = creerTirage(liste, aleatoire);
+      const nouvelle = tirage();
+      setTirage({ tirer: tirage, premiere: nouvelle });
+      setHistorique(creerHistorique(nouvelle));
+      setCartes([
+        {
+          cle: prochaineCle.current++,
+          enigme: nouvelle,
+          face: 'recto',
+          entree: null,
+          sortie: null,
+        },
+      ]);
+      setFace('recto');
+      liberer();
+    }
+    // Seul un changement d'âge relance le tirage.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [age]);
+  /* eslint-enable react-hooks/set-state-in-effect */
   const { width: largeurFenetre } = useWindowDimensions();
   // Recalculée à chaque rendu : EcranDuMoment la rafraîchit au retour au premier plan.
   const date = formaterDateDuJour(maintenant ?? new Date());
