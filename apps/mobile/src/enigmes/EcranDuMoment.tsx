@@ -2,6 +2,7 @@ import { salutationDuMoment, themeAffiche, type CleTheme } from '@animpartner/sh
 import { useEffect, useState } from 'react';
 import { AppState, useWindowDimensions } from 'react-native';
 
+import { useAgeGroupe } from '@/reglages/useAgeGroupe';
 import { usePrenom } from '@/reglages/usePrenom';
 import { useModeTheme } from '@/reglages/useModeTheme';
 import { bandeauDe, paletteDe } from '@/theme/themes';
@@ -22,6 +23,7 @@ export function EcranDuMoment({ force, maintenant = horloge }: Props) {
   const { width } = useWindowDimensions();
   const { mode, charge } = useModeTheme();
   const { prenom, charge: prenomCharge } = usePrenom();
+  const { age, charge: ageCharge } = useAgeGroupe();
   const [date, setDate] = useState(maintenant);
 
   useEffect(() => {
@@ -31,8 +33,8 @@ export function EcranDuMoment({ force, maintenant = horloge }: Props) {
     return () => abonnement.remove();
   }, [maintenant]);
 
-  // Rien tant que le mode mémorisé n'est pas lu : pas de thème par défaut remplacé ensuite.
-  if (!(charge && prenomCharge) && !force) return null;
+  // Rien tant que les réglages mémorisés ne sont pas lus : pas de thème par défaut remplacé ensuite.
+  if (!(charge && prenomCharge && ageCharge) && !force) return null;
   const cle = force ?? themeAffiche(mode, date);
   // La salutation suit l'heure, jamais le mode ; le thème forcé (recette) garde celle de sa palette.
   const base = paletteDe(cle);
@@ -43,6 +45,7 @@ export function EcranDuMoment({ force, maintenant = horloge }: Props) {
       bandeau={bandeauDe(cle, width)}
       maintenant={date}
       prenom={prenom}
+      age={age}
     />
   );
 }

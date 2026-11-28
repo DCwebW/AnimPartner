@@ -24,3 +24,5 @@ export {
   type ModeTheme,
 } from './themes/modeTheme';
 export { PRENOM_MAX, PrenomSchema, nettoyerPrenom, salutationAvecPrenom } from './prenom';
+export { AgeGroupeSchema, enigmesPourAge, type AgeGroupe } from './enigmes/filtrage';
+export { AGE_COUVERT_MAX, AGE_COUVERT_MIN } from './enigmes/controles';
